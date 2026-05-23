@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Preview</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+  <canvas id="bg"></canvas>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+<section class="preview">
+
+  <div class="preview-card">
+
+    <div class="profile-header">
+
+      <img id="previewImage" class="preview-image">
+
+      <div class="profile-info">
+        <h1 id="previewName"></h1>
+        <h3 id="previewRole"></h3>
+        <p id="previewAbout"></p>
+      </div>
+
+    </div>
+
+    <div class="preview-section">
+      <h2>Skills</h2>
+      <div id="previewSkills" class="skills-list"></div>
+    </div>
+
+    <div class="preview-section">
+      <h2>Projects</h2>
+      <div id="previewProjects" class="projects-preview-grid"></div>
+    </div>
+
+    <div class="preview-section">
+      <h2>Certifications</h2>
+      <div id="previewCertifications" class="cert-preview-grid"></div>
+    </div>
+
+         <div class="preview-section">
+        <h2>Experience</h2>
+        <div id="previewExperience" class="experience-preview-grid"></div>
+        </div>
+    <div class="preview-section">
+      <h2>Contact</h2>
+
+      <p>📧 <a id="previewEmail"></a></p>
+
+      <p>
+        💼
+        <a id="previewLinkedin" target="_blank">LinkedIn</a>
+      </p>
+
+      <p>
+        🐱
+        <a id="previewGithub" target="_blank">GitHub</a>
+      </p>
+
+      <p id="previewPhone"></p>
+    </div>
+
+  <button type="button" id="publishBtn" class="btn">
+  Publish Portfolio
+</button>
+</div>
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>

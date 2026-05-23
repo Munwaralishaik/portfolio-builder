@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="bg"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+<section class="builder">
+  <div class="builder-card">
+    <h1>Build Your Portfolio</h1>
+    <p>Enter your details below</p>
+
+    <form id="portfolioForm">
+      <input type="file" id="profileImage" accept="image/*">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="text" id="role" placeholder="Role / Title" required>
+      <textarea id="about" placeholder="About Me" rows="5" required></textarea>
+
+
+      <h2>Skills</h2>
+      <input type="text" id="skills" placeholder="Skills separated by comma">
+      <input type="text" id="github" placeholder="GitHub URL">
+      <input type="text" id="linkedin" placeholder="LinkedIn URL">
+
+      <h2>Projects</h2>
+
+    <div id="projectsContainer">
+      <div class="project-input">
+        <input type="text" class="projectTitle" placeholder="Project Title">
+        <textarea class="projectDescription" placeholder="Project Description" rows="4"></textarea>
+        <input type="text" class="projectTech" placeholder="Technologies, comma separated">
+        <input type="text" class="projectLink" placeholder="Project / GitHub Link">
+      </div>
+    </div>
+
+    <button type="button" class="btn outline-btn" id="addProjectBtn">
+      + Add Another Project
+    </button>
+      <input type="email" id="email" placeholder="Email">
+      <input type="text" id="phone" placeholder="Phone Number">
+      <h2>Certifications</h2>
+
+      <div id="certificationsContainer">
+      
+        <div class="cert-input">
+        
+          <input type="text"
+            class="certTitle"
+            placeholder="Certificate Title">
+        
+          <input type="text"
+            class="certProvider"
+            placeholder="Provider / Organization">
+        
+          <input type="text"
+            class="certYear"
+            placeholder="Year">
+        
+        </div>
+      
+      </div>
+
+      <button type="button"
+        class="btn outline-btn"
+        id="addCertBtn">
+
+        + Add Another Certificate
+
+      </button>
+
+      <h2>Experience</h2>
+
+<div id="experienceContainer">
+  <div class="experience-input">
+    <input type="text" class="expTitle" placeholder="Experience Title">
+    <input type="text" class="expYear" placeholder="Year / Duration">
+    <textarea class="expDescription" placeholder="Description" rows="4"></textarea>
+  </div>
+</div>
+
+<button type="button" class="btn outline-btn" id="addExperienceBtn">
+  + Add Another Experience
+</button>
+
+      <button type="submit" class="btn">Generate Portfolio</button>
+
+    </form>
+  </div>
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>
