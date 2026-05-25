@@ -34,4 +34,9 @@ public class PortfolioController {
 
         return portfolioService.updatePortfolio(slug, request);
     }
+  @DeleteMapping("/{slug}")
+    public String deletePortfolio(@PathVariable String slug) {
+    portfolioService.deletePortfolio(slug);
+    return "Portfolio Deleted Successfully";
+    }
 }

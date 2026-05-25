@@ -116,16 +116,49 @@ if (form) {
       projects,
       certifications,
       experiences,
-      image: ""
+      image: "",
+      resume: ""
     };
 
     const fileInput = document.getElementById("profileImage");
     const file = fileInput ? fileInput.files[0] : null;
 
+    const resumeInput = document.getElementById("resumeFile");
+    const resumeFile = resumeInput ? resumeInput.files[0] : null;
+
     const saveAndRedirect = () => {
       localStorage.setItem("portfolioData", JSON.stringify(data));
       window.location.href = "preview.html";
     };
+
+    function readResumeAndSave() {
+      if (resumeFile) {
+        if (resumeFile.type !== "application/pdf") {
+          alert("Resume must be a PDF file");
+          return;
+        }
+
+        if (resumeFile.size > 2 * 1024 * 1024) {
+          alert("Resume size must be below 2MB");
+          return;
+        }
+
+        const resumeReader = new FileReader();
+
+        resumeReader.onloadend = function () {
+          data.resume = resumeReader.result;
+          saveAndRedirect();
+        };
+
+        resumeReader.onerror = function () {
+          alert("Error reading resume");
+        };
+
+        resumeReader.readAsDataURL(resumeFile);
+      } else {
+        saveAndRedirect();
+      }
+    }
 
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
@@ -137,12 +170,16 @@ if (form) {
 
       reader.onloadend = function () {
         data.image = reader.result;
-        saveAndRedirect();
+        readResumeAndSave();
+      };
+
+      reader.onerror = function () {
+        alert("Error reading image");
       };
 
       reader.readAsDataURL(file);
     } else {
-      saveAndRedirect();
+      readResumeAndSave();
     }
   });
 }
@@ -153,26 +190,30 @@ let data = null;
 async function loadPortfolio() {
   const page = window.location.pathname;
 
-  if (currentSlug && page.includes("builder.html")) {
-    const response = await fetch(API_URL + "/" + currentSlug);
-    const portfolio = await response.json();
-    fillBuilderForm(portfolio);
-    return;
-  }
+  try {
+    if (currentSlug && page.includes("builder.html")) {
+      const response = await fetch(API_URL + "/" + currentSlug);
+      const portfolio = await response.json();
+      fillBuilderForm(portfolio);
+      return;
+    }
 
-  if (currentSlug) {
-    const response = await fetch(API_URL + "/" + currentSlug);
-    data = await response.json();
+    if (currentSlug) {
+      const response = await fetch(API_URL + "/" + currentSlug);
+      data = await response.json();
 
-    data.skills = data.skills ? data.skills.split(",") : [];
-    data.projects = data.projects ? JSON.parse(data.projects) : [];
-    data.certifications = data.certifications ? JSON.parse(data.certifications) : [];
-    data.experiences = data.experiences ? JSON.parse(data.experiences) : [];
+      data.skills = data.skills ? data.skills.split(",") : [];
+      data.projects = data.projects ? JSON.parse(data.projects) : [];
+      data.certifications = data.certifications ? JSON.parse(data.certifications) : [];
+      data.experiences = data.experiences ? JSON.parse(data.experiences) : [];
 
-    renderPortfolio();
-  } else {
-    data = JSON.parse(localStorage.getItem("portfolioData"));
-    renderPortfolio();
+      renderPortfolio();
+    } else {
+      data = JSON.parse(localStorage.getItem("portfolioData"));
+      renderPortfolio();
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
 
@@ -189,17 +230,17 @@ function fillBuilderForm(data) {
   document.getElementById("email").value = data.email || "";
   document.getElementById("phone").value = data.phone || "";
 
-  if (data.projects) {
+  if (data.projects && projectsContainer) {
     projectsContainer.innerHTML = "";
     JSON.parse(data.projects).forEach(project => addProjectInput(project));
   }
 
-  if (data.certifications) {
+  if (data.certifications && certificationsContainer) {
     certificationsContainer.innerHTML = "";
     JSON.parse(data.certifications).forEach(cert => addCertInput(cert));
   }
 
-  if (data.experiences) {
+  if (data.experiences && experienceContainer) {
     experienceContainer.innerHTML = "";
     JSON.parse(data.experiences).forEach(exp => addExperienceInput(exp));
   }
@@ -216,7 +257,12 @@ function renderPortfolio() {
 
   const setHref = (id, value) => {
     const el = document.getElementById(id);
-    if (el) el.href = value || "#";
+    if (el && value) {
+      el.href = value;
+      el.style.display = "inline";
+    } else if (el) {
+      el.style.display = "none";
+    }
   };
 
   const previewImage = document.getElementById("previewImage");
@@ -234,6 +280,20 @@ function renderPortfolio() {
 
   setHref("previewGithub", data.github);
   setHref("previewLinkedin", data.linkedin);
+  const resumeLink = document.getElementById("previewResume");
+
+if (resumeLink) {
+  if (data.resume) {
+    resumeLink.href = data.resume;
+    resumeLink.download = "resume.pdf";
+    resumeLink.innerText = "Download Resume";
+    resumeLink.style.display = "inline";
+  } else {
+    resumeLink.innerText = "No Resume Uploaded";
+    resumeLink.removeAttribute("href");
+    resumeLink.style.display = "inline";
+  }
+}
 
   setText("previewPhone", "📱 " + data.phone);
 
@@ -345,6 +405,7 @@ if (publishBtn) {
       email: data.email,
       phone: data.phone,
       image: data.image,
+      resume: data.resume,
       slug,
       projects: JSON.stringify(data.projects),
       certifications: JSON.stringify(data.certifications),
@@ -399,6 +460,42 @@ if (copyLinkBtn) {
     setTimeout(function () {
       copyLinkBtn.innerText = "Copy Portfolio Link";
     }, 2000);
+  });
+}
+
+/* DELETE PORTFOLIO */
+const deleteBtn = document.getElementById("deleteBtn");
+
+if (deleteBtn) {
+  deleteBtn.addEventListener("click", async function () {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("id");
+
+    if (!slug) {
+      alert("Portfolio ID not found");
+      return;
+    }
+
+    const confirmDelete = confirm("Delete this portfolio?");
+
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(API_URL + "/" + slug, {
+        method: "DELETE"
+      });
+
+      if (!response.ok) {
+        throw new Error("Delete failed");
+      }
+
+      alert("Portfolio Deleted Successfully");
+      window.location.href = "./index.html";
+
+    } catch (error) {
+      console.error(error);
+      alert("Error deleting portfolio");
+    }
   });
 }
 

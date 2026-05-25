@@ -30,6 +30,7 @@ public class PortfolioService {
         portfolio.setPhone(request.getPhone());
 
         portfolio.setImage(request.getImage());
+        portfolio.setResume(request.getResume());
         portfolio.setProjects(request.getProjects());
         portfolio.setCertifications(request.getCertifications());
         portfolio.setExperiences(request.getExperiences());
@@ -64,6 +65,7 @@ public class PortfolioService {
         portfolio.setProjects(request.getProjects());
         portfolio.setCertifications(request.getCertifications());
         portfolio.setExperiences(request.getExperiences());
+        portfolio.setImage(request.getImage());
 
         return portfolioRepository.save(portfolio);
     }
@@ -71,5 +73,13 @@ public class PortfolioService {
     public Portfolio getPortfolioBySlug(String slug) {
         return portfolioRepository.findTopBySlugOrderByIdDesc(slug)
                 .orElseThrow(() -> new RuntimeException("Portfolio not found"));
+    }
+    public void deletePortfolio(String slug) {
+
+    Portfolio portfolio = portfolioRepository
+            .findTopBySlugOrderByIdDesc(slug)
+            .orElseThrow(() -> new RuntimeException("Portfolio not found"));
+
+    portfolioRepository.delete(portfolio);
     }
 }

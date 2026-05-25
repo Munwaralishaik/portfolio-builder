@@ -43,6 +43,10 @@ public class Portfolio {
     @Column(columnDefinition = "LONGTEXT")
     private String image;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String resume;
+
     private String slug;
 
     public Portfolio() {
@@ -158,6 +162,14 @@ public class Portfolio {
 
     public void setExperiences(String experiences) {
         this.experiences = experiences;
+    }
+
+    public String getResume() {
+        return resume;
+    }
+
+    public void setResume(String resume) {
+        this.resume = resume;
     }
     
 }

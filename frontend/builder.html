@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  
   <canvas id="bg"></canvas>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 
@@ -17,6 +18,10 @@
 
     <form id="portfolioForm">
       <input type="file" id="profileImage" accept="image/*">
+      <div class="form-group">
+      <label>Upload Resume (PDF)</label>
+      <input type="file" id="resumeFile" accept=".pdf">
+      </div>
       <input type="text" id="name" placeholder="Full Name" required>
       <input type="text" id="role" placeholder="Role / Title" required>
       <textarea id="about" placeholder="About Me" rows="5" required></textarea>

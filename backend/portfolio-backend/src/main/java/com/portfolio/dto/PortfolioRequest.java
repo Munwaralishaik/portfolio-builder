@@ -14,6 +14,7 @@ public class PortfolioRequest {
     private String projects;
     private String certifications;
     private String experiences;
+    private String resume;
 
     public String getName() {
         return name;
@@ -109,6 +110,13 @@ public class PortfolioRequest {
 
     public void setExperiences(String experiences) {
         this.experiences = experiences;
+    }
+    public String getResume() {
+    return resume;
+    }
+
+    public void setResume(String resume) {
+        this.resume = resume;
     }
 
 }
