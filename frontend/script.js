@@ -393,7 +393,10 @@ if (publishBtn) {
       return;
     }
 
-    const slug = data.name.toLowerCase().trim().replaceAll(" ", "-");
+    const slug = data.name
+      .toLowerCase()
+      .trim()
+      .replaceAll(" ", "-");
 
     const payload = {
       name: data.name,
@@ -406,7 +409,7 @@ if (publishBtn) {
       phone: data.phone,
       image: data.image,
       resume: data.resume,
-      slug,
+      slug: slug,
       projects: JSON.stringify(data.projects),
       certifications: JSON.stringify(data.certifications),
       experiences: JSON.stringify(data.experiences)
@@ -425,8 +428,11 @@ if (publishBtn) {
         throw new Error("Failed to publish portfolio");
       }
 
+      const savedPortfolio = await response.json();
+
       alert("Portfolio Published Successfully 🚀");
-      window.location.href = "./public.html?id=" + slug;
+
+      window.location.href = "./public.html?id=" + savedPortfolio.slug;
 
     } catch (error) {
       console.error(error);
