@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/portfolios";
+const API_URL = "https://portfolio-backend-au16.onrender.com/api/portfolios";
 
 const form = document.getElementById("portfolioForm");
 
