@@ -62,24 +62,33 @@ public class PortfolioService {
         portfolio.setPhone(request.getPhone());
 
         portfolio.setImage(request.getImage());
+        portfolio.setResume(request.getResume());
+
         portfolio.setProjects(request.getProjects());
         portfolio.setCertifications(request.getCertifications());
         portfolio.setExperiences(request.getExperiences());
-        portfolio.setImage(request.getImage());
+
+        String newSlug = request.getName()
+                .toLowerCase()
+                .trim()
+                .replaceAll("\\s+", "-");
+
+        portfolio.setSlug(newSlug);
 
         return portfolioRepository.save(portfolio);
     }
 
-        public Portfolio getPortfolioBySlug(String slug) {
+    public Portfolio getPortfolioBySlug(String slug) {
         return portfolioRepository.findTopBySlugOrderByIdDesc(slug)
-            .orElseThrow(() -> new RuntimeException("Portfolio not found with slug: " + slug));
+                .orElseThrow(() -> new RuntimeException("Portfolio not found with slug: " + slug));
     }
+
     public void deletePortfolio(String slug) {
 
-    Portfolio portfolio = portfolioRepository
-            .findTopBySlugOrderByIdDesc(slug)
-            .orElseThrow(() -> new RuntimeException("Portfolio not found"));
+        Portfolio portfolio = portfolioRepository
+                .findTopBySlugOrderByIdDesc(slug)
+                .orElseThrow(() -> new RuntimeException("Portfolio not found"));
 
-    portfolioRepository.delete(portfolio);
+        portfolioRepository.delete(portfolio);
     }
 }
