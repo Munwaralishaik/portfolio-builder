@@ -128,7 +128,7 @@ if (form) {
 
     const saveAndRedirect = () => {
       localStorage.setItem("portfolioData", JSON.stringify(data));
-      window.location.href = "preview.html";
+      window.location.href = "./preview.html";
     };
 
     function readResumeAndSave() {
