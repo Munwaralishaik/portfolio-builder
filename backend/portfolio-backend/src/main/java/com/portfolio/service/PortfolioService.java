@@ -70,9 +70,9 @@ public class PortfolioService {
         return portfolioRepository.save(portfolio);
     }
 
-    public Portfolio getPortfolioBySlug(String slug) {
+        public Portfolio getPortfolioBySlug(String slug) {
         return portfolioRepository.findTopBySlugOrderByIdDesc(slug)
-                .orElseThrow(() -> new RuntimeException("Portfolio not found"));
+            .orElseThrow(() -> new RuntimeException("Portfolio not found with slug: " + slug));
     }
     public void deletePortfolio(String slug) {
 
