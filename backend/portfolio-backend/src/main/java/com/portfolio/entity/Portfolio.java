@@ -14,7 +14,7 @@ public class Portfolio {
 
     private String role;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     private String about;
 
     private String skills;
@@ -27,23 +27,18 @@ public class Portfolio {
 
     private String phone;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String projects;
-    
-    @Lob
+
     @Column(columnDefinition = "TEXT")
     private String certifications;
-    
-    @Lob
+
     @Column(columnDefinition = "TEXT")
     private String experiences;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String image;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String resume;
 
@@ -171,5 +166,5 @@ public class Portfolio {
     public void setResume(String resume) {
         this.resume = resume;
     }
-    
+
 }
