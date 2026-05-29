@@ -665,22 +665,73 @@ if (logoutBtn) {
     alert("Logged out successfully");
     window.location.href = "login.html";
   });
-}/* DASHBOARD */
+}
+/* DASHBOARD PORTFOLIOS */
 
-const dashboardPortfolios = document.getElementById("dashboardPortfolios");
+const dashboardContainer = document.getElementById("dashboardPortfolios");
 
-if (dashboardPortfolios) {
-  const token = localStorage.getItem("token");
+if (dashboardContainer) {
+  loadDashboardPortfolios();
+}
 
-  if (!token) {
-    alert("Please login first");
-    window.location.href = "login.html";
+async function loadDashboardPortfolios() {
+  try {
+    const response = await fetch(API_URL);
+    const portfolios = await response.json();
+
+    dashboardContainer.innerHTML = "";
+
+    if (!portfolios.length) {
+      dashboardContainer.innerHTML = "<p>No portfolios found.</p>";
+      return;
+    }
+
+    portfolios.reverse().forEach(portfolio => {
+
+      const card = document.createElement("div");
+      card.className = "dashboard-card";
+
+      card.innerHTML = `
+        <h3>${portfolio.name}</h3>
+        <p>${portfolio.role || ""}</p>
+
+        <a class="btn"
+           href="public.html?id=${portfolio.slug}">
+           View
+        </a>
+
+        <a class="btn"
+           href="builder.html?id=${portfolio.slug}">
+           Edit
+        </a>
+
+        <button class="btn delete-dashboard"
+                data-slug="${portfolio.slug}">
+           Delete
+        </button>
+      `;
+
+      dashboardContainer.appendChild(card);
+    });
+
+    document.querySelectorAll(".delete-dashboard")
+      .forEach(btn => {
+
+        btn.addEventListener("click", async function () {
+
+          const slug = this.dataset.slug;
+
+          if (!confirm("Delete this portfolio?")) return;
+
+          await fetch(API_URL + "/" + slug, {
+            method: "DELETE"
+          });
+
+          loadDashboardPortfolios();
+        });
+      });
+
+  } catch (error) {
+    console.error(error);
   }
-
-  dashboardPortfolios.innerHTML = `
-    <div class="project-preview">
-      <h3>Your portfolios will appear here</h3>
-      <p>Use the Create New Portfolio button to build a portfolio.</p>
-    </div>
-  `;
 }
