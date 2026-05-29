@@ -1,5 +1,5 @@
 package com.portfolio.controller;
-
+import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 import com.portfolio.dto.PortfolioRequest;
@@ -20,6 +20,10 @@ public class PortfolioController {
     @PostMapping
     public Portfolio createPortfolio(@RequestBody PortfolioRequest request) {
         return portfolioService.savePortfolio(request);
+    }
+    @GetMapping
+    public List<Portfolio> getAllPortfolios() {
+    return portfolioService.getAllPortfolios();
     }
 
     @GetMapping("/{slug}")

@@ -1,5 +1,6 @@
 package com.portfolio.service;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.portfolio.dto.PortfolioRequest;
@@ -10,6 +11,9 @@ import com.portfolio.repository.PortfolioRepository;
 public class PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
+    public List<Portfolio> getAllPortfolios() {
+    return portfolioRepository.findAll();
+    }
 
     public PortfolioService(PortfolioRepository portfolioRepository) {
         this.portfolioRepository = portfolioRepository;
