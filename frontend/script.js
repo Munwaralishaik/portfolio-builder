@@ -640,7 +640,7 @@ if (loginBtn) {
 
       alert("Login Successful ✅");
 
-      window.location.href = "builder.html";
+      window.location.href = "dashboard.html";
 
     } catch (err) {
       console.error(err);
@@ -665,4 +665,22 @@ if (logoutBtn) {
     alert("Logged out successfully");
     window.location.href = "login.html";
   });
+}/* DASHBOARD */
+
+const dashboardPortfolios = document.getElementById("dashboardPortfolios");
+
+if (dashboardPortfolios) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Please login first");
+    window.location.href = "login.html";
+  }
+
+  dashboardPortfolios.innerHTML = `
+    <div class="project-preview">
+      <h3>Your portfolios will appear here</h3>
+      <p>Use the Create New Portfolio button to build a portfolio.</p>
+    </div>
+  `;
 }
