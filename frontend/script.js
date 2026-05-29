@@ -657,3 +657,12 @@ if (window.location.pathname.includes("builder.html")) {
     window.location.href = "login.html";
   }
 }
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", function () {
+    localStorage.removeItem("token");
+    alert("Logged out successfully");
+    window.location.href = "login.html";
+  });
+}
