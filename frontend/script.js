@@ -561,3 +561,91 @@ if (canvas && typeof THREE !== "undefined") {
     camera.updateProjectionMatrix();
   });
 }
+/* SIGNUP */
+
+const signupBtn = document.getElementById("signupBtn");
+
+if (signupBtn) {
+  signupBtn.addEventListener("click", async () => {
+
+    const name = document.getElementById("signupName").value;
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
+
+    try {
+
+      const response = await fetch(
+        "https://portfolio-backend-au16.onrender.com/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Signup failed");
+      }
+
+      alert("Signup Successful ✅");
+      window.location.href = "login.html";
+
+    } catch (err) {
+      console.error(err);
+      alert("Signup Failed ❌");
+    }
+
+  });
+}
+
+/* LOGIN */
+
+const loginBtn = document.getElementById("loginBtn");
+
+if (loginBtn) {
+  loginBtn.addEventListener("click", async () => {
+
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+
+      const response = await fetch(
+        "https://portfolio-backend-au16.onrender.com/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email,
+            password
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const token = await response.text();
+
+      localStorage.setItem("token", token);
+
+      alert("Login Successful ✅");
+
+      window.location.href = "builder.html";
+
+    } catch (err) {
+      console.error(err);
+      alert("Invalid Credentials ❌");
+    }
+
+  });
+}
