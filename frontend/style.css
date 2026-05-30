@@ -555,4 +555,10 @@ body::before {
 .dashboard-card h3{
   margin-bottom:10px;
 }
+#portfolioCount{
+  color:#38bdf8;
+  margin-top:10px;
+  margin-bottom:20px;
+  font-size:18px;
+}
 

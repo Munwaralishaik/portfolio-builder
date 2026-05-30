@@ -682,6 +682,12 @@ async function loadDashboardPortfolios() {
     const userEmail = localStorage.getItem("userEmail");
     const response = await fetch(API_URL + "/my/" + userEmail);
     const portfolios = await response.json();
+    const portfolioCount = document.getElementById("portfolioCount");
+
+    if (portfolioCount) {
+    portfolioCount.innerText =
+    "Total Portfolios: " + portfolios.length;
+  }
 
     dashboardContainer.innerHTML = "";
 
