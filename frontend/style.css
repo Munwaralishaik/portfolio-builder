@@ -561,4 +561,11 @@ body::before {
   margin-bottom:20px;
   font-size:18px;
 }
+#changePasswordBtn{
+  margin-left:10px;
+}
+
+.profile-actions{
+  margin-top:25px;
+}
 

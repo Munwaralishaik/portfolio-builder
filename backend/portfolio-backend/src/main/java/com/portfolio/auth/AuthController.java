@@ -22,4 +22,10 @@ public class AuthController {
     public User login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
+    @PostMapping("/change-password")
+public String changePassword(
+        @RequestBody ChangePasswordRequest request) {
+
+    return authService.changePassword(request);
+    }
 }

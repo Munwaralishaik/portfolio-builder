@@ -28,4 +28,19 @@ public class AuthService {
                 .filter(user -> user.getPassword().equals(request.getPassword()))
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
     }
+    public String changePassword(ChangePasswordRequest request) {
+
+    User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    if (!user.getPassword().equals(request.getCurrentPassword())) {
+        throw new RuntimeException("Current password is incorrect");
+    }
+
+    user.setPassword(request.getNewPassword());
+
+    userRepository.save(user);
+
+    return "Password updated successfully";
+    }
 }
