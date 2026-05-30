@@ -639,6 +639,7 @@ if (loginBtn) {
 
       localStorage.setItem("token", user.email);
       localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("userName", user.name);
 
       alert("Login Successful ✅");
 
@@ -737,4 +738,10 @@ async function loadDashboardPortfolios() {
   } catch (error) {
     console.error(error);
   }
+}
+const welcomeUser = document.getElementById("welcomeUser");
+
+if (welcomeUser) {
+  const userName = localStorage.getItem("userName");
+  welcomeUser.innerText = userName ? "Welcome, " + userName + " 👋" : "";
 }
