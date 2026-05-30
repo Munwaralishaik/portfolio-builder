@@ -751,3 +751,17 @@ if (welcomeUser) {
   const userName = localStorage.getItem("userName");
   welcomeUser.innerText = userName ? "Welcome, " + userName + " 👋" : "";
 }
+const profileName =
+  document.getElementById("profileName");
+
+const profileEmail =
+  document.getElementById("profileEmail");
+
+if (profileName && profileEmail) {
+
+  profileName.innerText =
+    localStorage.getItem("userName") || "Unknown";
+
+  profileEmail.innerText =
+    localStorage.getItem("userEmail") || "Unknown";
+}
