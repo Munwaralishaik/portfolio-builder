@@ -765,3 +765,31 @@ if (profileName && profileEmail) {
   profileEmail.innerText =
     localStorage.getItem("userEmail") || "Unknown";
 }
+const changePasswordBtn = document.getElementById("changePasswordBtn");
+
+if (changePasswordBtn) {
+  changePasswordBtn.addEventListener("click", async function () {
+
+    const email = localStorage.getItem("userEmail");
+    const currentPassword = document.getElementById("currentPassword").value;
+    const newPassword = document.getElementById("newPassword").value;
+
+    const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email,
+        currentPassword,
+        newPassword
+      })
+    });
+
+    if (response.ok) {
+      alert("Password updated successfully ✅");
+    } else {
+      alert("Password update failed ❌");
+    }
+  });
+}
