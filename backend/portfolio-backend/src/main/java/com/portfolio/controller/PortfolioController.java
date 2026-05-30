@@ -1,4 +1,5 @@
 package com.portfolio.controller;
+
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,10 @@ public class PortfolioController {
     public Portfolio createPortfolio(@RequestBody PortfolioRequest request) {
         return portfolioService.savePortfolio(request);
     }
+
     @GetMapping
     public List<Portfolio> getAllPortfolios() {
-    return portfolioService.getAllPortfolios();
+        return portfolioService.getAllPortfolios();
     }
 
     @GetMapping("/{slug}")
@@ -38,9 +40,15 @@ public class PortfolioController {
 
         return portfolioService.updatePortfolio(slug, request);
     }
-  @DeleteMapping("/{slug}")
+
+    @DeleteMapping("/{slug}")
     public String deletePortfolio(@PathVariable String slug) {
-    portfolioService.deletePortfolio(slug);
-    return "Portfolio Deleted Successfully";
+        portfolioService.deletePortfolio(slug);
+        return "Portfolio Deleted Successfully";
+    }
+
+    @GetMapping("/my/{email}")
+    public List<Portfolio> getMyPortfolios(@PathVariable String email) {
+        return portfolioService.getPortfoliosByUserEmail(email);
     }
 }

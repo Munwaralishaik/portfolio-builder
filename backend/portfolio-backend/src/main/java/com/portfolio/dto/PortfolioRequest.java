@@ -15,6 +15,7 @@ public class PortfolioRequest {
     private String certifications;
     private String experiences;
     private String resume;
+    private String userEmail;
 
     public String getName() {
         return name;
@@ -117,6 +118,14 @@ public class PortfolioRequest {
 
     public void setResume(String resume) {
         this.resume = resume;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 }

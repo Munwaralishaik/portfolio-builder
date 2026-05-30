@@ -1,5 +1,6 @@
 package com.portfolio.entity;
 
+import com.portfolio.auth.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,20 +12,15 @@ public class Portfolio {
     private Long id;
 
     private String name;
-
     private String role;
 
     @Column(columnDefinition = "TEXT")
     private String about;
 
     private String skills;
-
     private String github;
-
     private String linkedin;
-
     private String email;
-
     private String phone;
 
     @Column(columnDefinition = "TEXT")
@@ -43,6 +39,10 @@ public class Portfolio {
     private String resume;
 
     private String slug;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Portfolio() {
     }
@@ -119,22 +119,6 @@ public class Portfolio {
         this.phone = phone;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
     public String getProjects() {
         return projects;
     }
@@ -159,6 +143,14 @@ public class Portfolio {
         this.experiences = experiences;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public String getResume() {
         return resume;
     }
@@ -167,4 +159,19 @@ public class Portfolio {
         this.resume = resume;
     }
 
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

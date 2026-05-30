@@ -412,7 +412,8 @@ if (publishBtn) {
       slug: slug,
       projects: JSON.stringify(data.projects),
       certifications: JSON.stringify(data.certifications),
-      experiences: JSON.stringify(data.experiences)
+      experiences: JSON.stringify(data.experiences),
+      userEmail: localStorage.getItem("userEmail")
     };
 
     try {
@@ -634,9 +635,10 @@ if (loginBtn) {
         throw new Error("Login failed");
       }
 
-      const token = await response.text();
+      const user = await response.json();
 
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", user.email);
+      localStorage.setItem("userEmail", user.email);
 
       alert("Login Successful ✅");
 
@@ -676,7 +678,8 @@ if (dashboardContainer) {
 
 async function loadDashboardPortfolios() {
   try {
-    const response = await fetch(API_URL);
+    const userEmail = localStorage.getItem("userEmail");
+    const response = await fetch(API_URL + "/my/" + userEmail);
     const portfolios = await response.json();
 
     dashboardContainer.innerHTML = "";
