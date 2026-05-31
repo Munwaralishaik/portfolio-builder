@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/p/:slug",
-      "destination": "/frontend/public.html"
+      "destination": "/public.html"
     }
   ]
 }
