@@ -804,3 +804,20 @@ if (!localStorage.getItem("userEmail")) {
     btn.style.display = "none";
   });
 }
+const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+
+if (downloadPdfBtn) {
+  downloadPdfBtn.addEventListener("click", function () {
+    const element = document.querySelector(".preview-card");
+
+    const options = {
+      margin: 0.5,
+      filename: "portfolio.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    };
+
+    html2pdf().set(options).from(element).save();
+  });
+}
