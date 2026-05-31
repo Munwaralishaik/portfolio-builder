@@ -568,4 +568,35 @@ body::before {
 .profile-actions{
   margin-top:25px;
 }
+.back-dashboard-btn{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    color:black !important;
+    font-size:18px !important;
+    font-weight:700 !important;
+    min-width:250px;
+    text-decoration:none;
+}
+
+.portfolio-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:25px;
+}
+.search-input{
+  width:100%;
+  padding:14px;
+  margin:20px 0;
+  border:none;
+  border-radius:10px;
+  background:#1e293b;
+  color:white;
+  font-size:16px;
+}
+
+.search-input:focus{
+  outline:2px solid #38bdf8;
+}
 

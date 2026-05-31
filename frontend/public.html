@@ -68,21 +68,26 @@
 
       <p id="previewPhone"></p>
     </div>
-    <button id="editBtn" class="btn">
-  Edit Portfolio
-</button>
+  <div class="portfolio-actions">
+
+  <button id="editBtn" class="btn owner-only">
+    Edit Portfolio
+  </button>
 
   <button id="copyLinkBtn" class="btn">
-  Copy Portfolio Link
+    Copy Portfolio Link
+  </button>
+
+  <button id="deleteBtn" class="btn delete-btn owner-only">
+    Delete Portfolio
+  </button>
+
+ <button
+  onclick="window.location.href='dashboard.html'"
+  class="btn owner-only">
+  Back To Dashboard
 </button>
 
-
-<button id="deleteBtn" class="btn delete-btn">
-  Delete Portfolio
-</button>
-  <a href="dashboard.html" class="btn">
-    ← Back To Dashboard
-  </a>
 </div>
 
 </section>
