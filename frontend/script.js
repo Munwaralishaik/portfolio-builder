@@ -465,7 +465,8 @@ const copyLinkBtn = document.getElementById("copyLinkBtn");
 
 if (copyLinkBtn) {
   copyLinkBtn.addEventListener("click", function () {
-    navigator.clipboard.writeText(window.location.href);
+    const portfolioLink = window.location.origin + "/p/" + currentSlug;
+    navigator.clipboard.writeText(portfolioLink);
     copyLinkBtn.innerText = "Link Copied ✅";
 
     setTimeout(function () {
@@ -479,8 +480,7 @@ const deleteBtn = document.getElementById("deleteBtn");
 
 if (deleteBtn) {
   deleteBtn.addEventListener("click", async function () {
-    const params = new URLSearchParams(window.location.search);
-    const slug = params.get("id");
+    let slug = currentSlug;
 
     if (!slug) {
       alert("Portfolio ID not found");
@@ -710,7 +710,7 @@ async function loadDashboardPortfolios() {
         <p>${portfolio.role || ""}</p>
 
         <a class="btn"
-           href="public.html?id=${portfolio.slug}">
+           href="/p/${portfolio.slug}">
            View
         </a>
 
