@@ -793,3 +793,12 @@ if (changePasswordBtn) {
     }
   });
 }
+const ownerActions = document.getElementById("ownerActions");
+
+if (ownerActions) {
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (!userEmail) {
+    ownerActions.style.display = "none";
+  }
+}
