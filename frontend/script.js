@@ -12,7 +12,11 @@ const addExperienceBtn = document.getElementById("addExperienceBtn");
 const experienceContainer = document.getElementById("experienceContainer");
 
 const params = new URLSearchParams(window.location.search);
-const currentSlug = params.get("id");
+let currentSlug = params.get("id");
+
+if (!currentSlug && window.location.pathname.startsWith("/p/")) {
+  currentSlug = window.location.pathname.replace("/p/", "");
+}
 
 /* ADD PROJECT */
 if (addProjectBtn && projectsContainer) {
@@ -433,7 +437,7 @@ if (publishBtn) {
 
       alert("Portfolio Published Successfully 🚀");
 
-      window.location.href = "./public.html?id=" + savedPortfolio.slug;
+      window.location.href = "/p/" + savedPortfolio.slug;
 
     } catch (error) {
       console.error(error);
@@ -799,35 +803,4 @@ if (!localStorage.getItem("userEmail")) {
   ownerButtons.forEach(btn => {
     btn.style.display = "none";
   });
-}
-const searchInput =
-  document.getElementById("searchPortfolio");
-
-if (searchInput) {
-
-  searchInput.addEventListener("keyup", () => {
-
-    const value =
-      searchInput.value.toLowerCase();
-
-    const cards =
-      document.querySelectorAll(".portfolio-card");
-
-    cards.forEach(card => {
-
-      const title =
-        card.querySelector("h3")
-        ?.innerText
-        .toLowerCase();
-
-      if(title.includes(value)){
-        card.style.display = "block";
-      }else{
-        card.style.display = "none";
-      }
-
-    });
-
-  });
-
 }
