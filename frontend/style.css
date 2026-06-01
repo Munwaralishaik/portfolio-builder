@@ -586,33 +586,88 @@ body::before {
   margin-top:25px;
 }
 .developer-template{
-  background:rgba(15,23,42,0.88) !important;
-  border:1px solid rgba(56,189,248,0.3) !important;
+  background:rgba(15,23,42,0.92) !important;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(56,189,248,.3) !important;
+  box-shadow:0 0 30px rgba(56,189,248,.15);
 }
 
 .data-template{
-  background:#08111f !important;
-  border-left:6px solid #22c55e !important;
+  background:rgba(6,78,59,0.92) !important;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(34,197,94,.3) !important;
+  box-shadow:0 0 30px rgba(34,197,94,.15);
 }
 
 .data-template h1,
-.data-template h2{
+.data-template h2,
+.data-template h3{
   color:#22c55e !important;
 }
 
 .minimal-template{
   background:#ffffff !important;
-  color:#0f172a !important;
+  color:#111827 !important;
+  border:1px solid #e5e7eb !important;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
 .minimal-template h1,
 .minimal-template h2,
 .minimal-template h3,
-.minimal-template p{
-  color:#0f172a !important;
+.minimal-template p,
+.minimal-template span{
+  color:#111827 !important;
 }
 
 .minimal-template a{
   color:#2563eb !important;
 }
 
+#template option{
+  background:#232738;
+  color:white;
+}
+.preview-card{
+  max-width:1100px !important;
+}
+
+.profile-header{
+  padding:30px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  margin-bottom:40px;
+}
+
+.preview-section{
+  padding:25px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.developer-template .project-preview,
+.developer-template .cert-card,
+.developer-template .experience-card{
+  background:rgba(15,23,42,0.75) !important;
+}
+
+.data-template .project-preview,
+.data-template .cert-card,
+.data-template .experience-card{
+  background:rgba(6,78,59,0.45) !important;
+}
+
+.minimal-template .profile-header,
+.minimal-template .preview-section{
+  background:#f8fafc !important;
+  border:1px solid #e5e7eb !important;
+}
+
+.minimal-template .project-preview,
+.minimal-template .cert-card,
+.minimal-template .experience-card{
+  background:white !important;
+  border:1px solid #e5e7eb !important;
+}

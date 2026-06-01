@@ -273,6 +273,7 @@ function renderPortfolio() {
     previewCard.classList.add(
       (data.template || "developer") + "-template"
     );
+    startThreeBackground(data.template || "developer");
   }
 
   const setText = (id, value) => {
@@ -532,11 +533,19 @@ if (deleteBtn) {
     }
   });
 }
-
 /* THREE JS BACKGROUND */
-const canvas = document.getElementById("bg");
+let threeRenderer = null;
+let threeAnimationId = null;
 
-if (canvas && typeof THREE !== "undefined") {
+function startThreeBackground(template = "developer") {
+  const canvas = document.getElementById("bg");
+
+  if (!canvas || typeof THREE === "undefined") return;
+
+if (threeAnimationId) {
+  cancelAnimationFrame(threeAnimationId);
+}
+
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
@@ -556,15 +565,47 @@ if (canvas && typeof THREE !== "undefined") {
 
   camera.position.z = 30;
 
-  const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+  let object;
 
-  const material = new THREE.MeshStandardMaterial({
-    color: 0x38bdf8,
-    wireframe: true
-  });
+  if (template === "data") {
+    const group = new THREE.Group();
 
-  const torus = new THREE.Mesh(geometry, material);
-  scene.add(torus);
+    for (let i = 0; i < 18; i++) {
+      const height = Math.random() * 12 + 4;
+      const geometry = new THREE.BoxGeometry(1.2, height, 1.2);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0x22c55e,
+        wireframe: true
+      });
+
+      const bar = new THREE.Mesh(geometry, material);
+      bar.position.x = (i - 9) * 2;
+      bar.position.y = -5;
+      group.add(bar);
+    }
+
+    object = group;
+  } else if (template === "minimal") {
+    const geometry = new THREE.SphereGeometry(9, 32, 32);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      wireframe: true,
+      opacity: 0.25,
+      transparent: true
+    });
+
+    object = new THREE.Mesh(geometry, material);
+  } else {
+    const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      wireframe: true
+    });
+
+    object = new THREE.Mesh(geometry, material);
+  }
+
+  scene.add(object);
 
   const light = new THREE.PointLight(0xffffff);
   light.position.set(20, 20, 20);
@@ -573,10 +614,10 @@ if (canvas && typeof THREE !== "undefined") {
   scene.add(light, ambient);
 
   function animate() {
-    requestAnimationFrame(animate);
+    threeAnimationId = requestAnimationFrame(animate);
 
-    torus.rotation.x += 0.002;
-    torus.rotation.y += 0.003;
+    object.rotation.x += 0.002;
+    object.rotation.y += 0.003;
 
     renderer.render(scene, camera);
   }
@@ -589,7 +630,6 @@ if (canvas && typeof THREE !== "undefined") {
     camera.updateProjectionMatrix();
   });
 }
-
 /* SIGNUP */
 const signupBtn = document.getElementById("signupBtn");
 
