@@ -111,6 +111,7 @@ if (form) {
     const data = {
       name: getValue("name"),
       role: getValue("role"),
+      template: getValue("template") || "developer",
       about: getValue("about"),
       skills: getValue("skills").split(","),
       github: getValue("github"),
@@ -227,6 +228,12 @@ loadPortfolio();
 function fillBuilderForm(data) {
   document.getElementById("name").value = data.name || "";
   document.getElementById("role").value = data.role || "";
+
+  const templateInput = document.getElementById("template");
+  if (templateInput) {
+    templateInput.value = data.template || "developer";
+  }
+
   document.getElementById("about").value = data.about || "";
   document.getElementById("skills").value = data.skills || "";
   document.getElementById("github").value = data.github || "";
@@ -253,6 +260,20 @@ function fillBuilderForm(data) {
 /* RENDER PORTFOLIO */
 function renderPortfolio() {
   if (!data) return;
+
+  const previewCard = document.querySelector(".preview-card");
+
+  if (previewCard) {
+    previewCard.classList.remove(
+      "developer-template",
+      "data-template",
+      "minimal-template"
+    );
+
+    previewCard.classList.add(
+      (data.template || "developer") + "-template"
+    );
+  }
 
   const setText = (id, value) => {
     const el = document.getElementById(id);
@@ -284,20 +305,21 @@ function renderPortfolio() {
 
   setHref("previewGithub", data.github);
   setHref("previewLinkedin", data.linkedin);
+
   const resumeLink = document.getElementById("previewResume");
 
-if (resumeLink) {
-  if (data.resume) {
-    resumeLink.href = data.resume;
-    resumeLink.download = "resume.pdf";
-    resumeLink.innerText = "Download Resume";
-    resumeLink.style.display = "inline";
-  } else {
-    resumeLink.innerText = "No Resume Uploaded";
-    resumeLink.removeAttribute("href");
-    resumeLink.style.display = "inline";
+  if (resumeLink) {
+    if (data.resume) {
+      resumeLink.href = data.resume;
+      resumeLink.download = "resume.pdf";
+      resumeLink.innerText = "Download Resume";
+      resumeLink.style.display = "inline";
+    } else {
+      resumeLink.innerText = "No Resume Uploaded";
+      resumeLink.removeAttribute("href");
+      resumeLink.style.display = "inline";
+    }
   }
-}
 
   setText("previewPhone", "📱 " + data.phone);
 
@@ -405,6 +427,7 @@ if (publishBtn) {
     const payload = {
       name: data.name,
       role: data.role,
+      template: data.template || "developer",
       about: data.about,
       skills: data.skills.join(","),
       github: data.github,
@@ -456,7 +479,7 @@ if (editBtn) {
       return;
     }
 
-    window.location.href = "./builder.html?id=" + currentSlug;
+    window.location.href = "/builder.html?id=" + currentSlug;
   });
 }
 
@@ -501,7 +524,7 @@ if (deleteBtn) {
       }
 
       alert("Portfolio Deleted Successfully");
-      window.location.href = "./index.html";
+      window.location.href = "/dashboard.html";
 
     } catch (error) {
       console.error(error);
@@ -566,8 +589,8 @@ if (canvas && typeof THREE !== "undefined") {
     camera.updateProjectionMatrix();
   });
 }
-/* SIGNUP */
 
+/* SIGNUP */
 const signupBtn = document.getElementById("signupBtn");
 
 if (signupBtn) {
@@ -578,7 +601,6 @@ if (signupBtn) {
     const password = document.getElementById("signupPassword").value;
 
     try {
-
       const response = await fetch(
         "https://portfolio-backend-au16.onrender.com/api/auth/signup",
         {
@@ -605,12 +627,10 @@ if (signupBtn) {
       console.error(err);
       alert("Signup Failed ❌");
     }
-
   });
 }
 
 /* LOGIN */
-
 const loginBtn = document.getElementById("loginBtn");
 
 if (loginBtn) {
@@ -620,7 +640,6 @@ if (loginBtn) {
     const password = document.getElementById("loginPassword").value;
 
     try {
-
       const response = await fetch(
         "https://portfolio-backend-au16.onrender.com/api/auth/login",
         {
@@ -653,9 +672,10 @@ if (loginBtn) {
       console.error(err);
       alert("Invalid Credentials ❌");
     }
-
   });
 }
+
+/* PROTECT BUILDER PAGE */
 if (window.location.pathname.includes("builder.html")) {
   const token = localStorage.getItem("token");
 
@@ -664,17 +684,21 @@ if (window.location.pathname.includes("builder.html")) {
     window.location.href = "login.html";
   }
 }
+
+/* LOGOUT */
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {
   logoutBtn.addEventListener("click", function () {
     localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
     alert("Logged out successfully");
     window.location.href = "login.html";
   });
 }
-/* DASHBOARD PORTFOLIOS */
 
+/* DASHBOARD PORTFOLIOS */
 const dashboardContainer = document.getElementById("dashboardPortfolios");
 
 if (dashboardContainer) {
@@ -689,9 +713,8 @@ async function loadDashboardPortfolios() {
     const portfolioCount = document.getElementById("portfolioCount");
 
     if (portfolioCount) {
-    portfolioCount.innerText =
-    "Total Portfolios: " + portfolios.length;
-  }
+      portfolioCount.innerText = "Total Portfolios: " + portfolios.length;
+    }
 
     dashboardContainer.innerHTML = "";
 
@@ -709,66 +732,60 @@ async function loadDashboardPortfolios() {
         <h3>${portfolio.name}</h3>
         <p>${portfolio.role || ""}</p>
 
-        <a class="btn"
-           href="/p/${portfolio.slug}">
-           View
+        <a class="btn" href="/p/${portfolio.slug}">
+          View
         </a>
 
-        <a class="btn"
-           href="builder.html?id=${portfolio.slug}">
-           Edit
+        <a class="btn" href="/builder.html?id=${portfolio.slug}">
+          Edit
         </a>
 
-        <button class="btn delete-dashboard"
-                data-slug="${portfolio.slug}">
-           Delete
+        <button class="btn delete-dashboard" data-slug="${portfolio.slug}">
+          Delete
         </button>
       `;
 
       dashboardContainer.appendChild(card);
     });
 
-    document.querySelectorAll(".delete-dashboard")
-      .forEach(btn => {
+    document.querySelectorAll(".delete-dashboard").forEach(btn => {
+      btn.addEventListener("click", async function () {
 
-        btn.addEventListener("click", async function () {
+        const slug = this.dataset.slug;
 
-          const slug = this.dataset.slug;
+        if (!confirm("Delete this portfolio?")) return;
 
-          if (!confirm("Delete this portfolio?")) return;
-
-          await fetch(API_URL + "/" + slug, {
-            method: "DELETE"
-          });
-
-          loadDashboardPortfolios();
+        await fetch(API_URL + "/" + slug, {
+          method: "DELETE"
         });
+
+        loadDashboardPortfolios();
       });
+    });
 
   } catch (error) {
     console.error(error);
   }
 }
+
+/* WELCOME USER */
 const welcomeUser = document.getElementById("welcomeUser");
 
 if (welcomeUser) {
   const userName = localStorage.getItem("userName");
   welcomeUser.innerText = userName ? "Welcome, " + userName + " 👋" : "";
 }
-const profileName =
-  document.getElementById("profileName");
 
-const profileEmail =
-  document.getElementById("profileEmail");
+/* PROFILE PAGE */
+const profileName = document.getElementById("profileName");
+const profileEmail = document.getElementById("profileEmail");
 
 if (profileName && profileEmail) {
-
-  profileName.innerText =
-    localStorage.getItem("userName") || "Unknown";
-
-  profileEmail.innerText =
-    localStorage.getItem("userEmail") || "Unknown";
+  profileName.innerText = localStorage.getItem("userName") || "Unknown";
+  profileEmail.innerText = localStorage.getItem("userEmail") || "Unknown";
 }
+
+/* CHANGE PASSWORD */
 const changePasswordBtn = document.getElementById("changePasswordBtn");
 
 if (changePasswordBtn) {
@@ -778,17 +795,20 @@ if (changePasswordBtn) {
     const currentPassword = document.getElementById("currentPassword").value;
     const newPassword = document.getElementById("newPassword").value;
 
-    const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/change-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email,
-        currentPassword,
-        newPassword
-      })
-    });
+    const response = await fetch(
+      "https://portfolio-backend-au16.onrender.com/api/auth/change-password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          currentPassword,
+          newPassword
+        })
+      }
+    );
 
     if (response.ok) {
       alert("Password updated successfully ✅");
@@ -797,27 +817,12 @@ if (changePasswordBtn) {
     }
   });
 }
+
+/* OWNER ONLY BUTTONS */
 const ownerButtons = document.querySelectorAll(".owner-only");
 
 if (!localStorage.getItem("userEmail")) {
   ownerButtons.forEach(btn => {
     btn.style.display = "none";
-  });
-}
-const downloadPdfBtn = document.getElementById("downloadPdfBtn");
-
-if (downloadPdfBtn) {
-  downloadPdfBtn.addEventListener("click", function () {
-    const element = document.querySelector(".preview-card");
-
-    const options = {
-      margin: 0.5,
-      filename: "portfolio.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
-    };
-
-    html2pdf().set(options).from(element).save();
   });
 }

@@ -44,6 +44,7 @@ public class PortfolioService {
         portfolio.setProjects(request.getProjects());
         portfolio.setCertifications(request.getCertifications());
         portfolio.setExperiences(request.getExperiences());
+        portfolio.setTemplate(request.getTemplate());
 
         String slug = request.getName()
                 .toLowerCase()
@@ -82,6 +83,7 @@ public class PortfolioService {
         portfolio.setProjects(request.getProjects());
         portfolio.setCertifications(request.getCertifications());
         portfolio.setExperiences(request.getExperiences());
+        portfolio.setTemplate(request.getTemplate());
 
         String newSlug = request.getName()
                 .toLowerCase()

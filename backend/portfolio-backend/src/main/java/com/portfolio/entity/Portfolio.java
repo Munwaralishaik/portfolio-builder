@@ -39,6 +39,7 @@ public class Portfolio {
     private String resume;
 
     private String slug;
+    private String template;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -173,5 +174,12 @@ public class Portfolio {
 
     public void setUser(User user) {
         this.user = user;
+    }
+    public String getTemplate() {
+    return template;
+    }
+    
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }

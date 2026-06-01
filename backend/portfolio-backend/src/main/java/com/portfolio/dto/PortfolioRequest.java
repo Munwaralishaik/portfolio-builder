@@ -16,6 +16,7 @@ public class PortfolioRequest {
     private String experiences;
     private String resume;
     private String userEmail;
+    private String template;
 
     public String getName() {
         return name;
@@ -127,5 +128,14 @@ public class PortfolioRequest {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+    
 
 }
