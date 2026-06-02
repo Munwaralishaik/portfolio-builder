@@ -865,4 +865,15 @@ if (!localStorage.getItem("userEmail")) {
   ownerButtons.forEach(btn => {
     btn.style.display = "none";
   });
+}const totalUsers = document.getElementById("totalUsers");
+const totalPortfolios = document.getElementById("totalPortfolios");
+
+if (totalUsers && totalPortfolios) {
+  fetch("https://portfolio-backend-au16.onrender.com/api/admin/stats")
+    .then(res => res.json())
+    .then(stats => {
+      totalUsers.innerText = stats.totalUsers;
+      totalPortfolios.innerText = stats.totalPortfolios;
+    })
+    .catch(err => console.error(err));
 }
