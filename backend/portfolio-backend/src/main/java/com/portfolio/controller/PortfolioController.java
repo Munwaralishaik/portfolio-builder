@@ -32,6 +32,10 @@ public class PortfolioController {
     public Portfolio getPortfolio(@PathVariable String slug) {
         return portfolioService.getPortfolioBySlug(slug);
     }
+      @PutMapping("/{slug}/view")
+       public Portfolio incrementView(@PathVariable String slug) {
+        return portfolioService.incrementViews(slug);
+    }
 
     @PutMapping("/{slug}")
     public Portfolio updatePortfolio(
@@ -45,10 +49,6 @@ public class PortfolioController {
     public String deletePortfolio(@PathVariable String slug) {
         portfolioService.deletePortfolio(slug);
         return "Portfolio Deleted Successfully";
-    }
-    @PutMapping("/{slug}/view")
-    public Portfolio incrementView(@PathVariable String slug) {
-        return portfolioService.incrementViews(slug);
     }
 
     @GetMapping("/my/{email}")
