@@ -206,7 +206,13 @@ async function loadPortfolio() {
     if (currentSlug) {
       const response = await fetch(API_URL + "/" + currentSlug);
       data = await response.json();
-
+      if (window.location.pathname.startsWith("/p/")) {
+          const viewResponse = await fetch(API_URL + "/" + currentSlug + "/view", {
+            method: "PUT"
+          });
+        
+          data = await viewResponse.json();
+     }
       data.skills = data.skills ? data.skills.split(",") : [];
       data.projects = data.projects ? JSON.parse(data.projects) : [];
       data.certifications = data.certifications ? JSON.parse(data.certifications) : [];
@@ -300,6 +306,11 @@ function renderPortfolio() {
   setText("previewName", data.name);
   setText("previewRole", data.role);
   setText("previewAbout", data.about);
+  const portfolioViews = document.getElementById("portfolioViews");
+
+  if (portfolioViews) {
+    portfolioViews.innerText = "👁️ Views: " + (data.views || 0);
+  }
 
   setText("previewEmail", data.email);
   setHref("previewEmail", "mailto:" + data.email);
