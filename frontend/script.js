@@ -220,9 +220,13 @@ async function loadPortfolio() {
 
       renderPortfolio();
     } else {
-      data = JSON.parse(localStorage.getItem("portfolioData"));
-      renderPortfolio();
-    }
+
+    data = JSON.parse(localStorage.getItem("portfolioData"));
+      
+    console.log("Preview Data:", data);
+      
+    renderPortfolio();
+  }
   } catch (error) {
     console.error(error);
   }
