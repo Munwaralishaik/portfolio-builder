@@ -40,6 +40,7 @@ public class Portfolio {
 
     private String slug;
     private String template;
+    private Long views = 0L;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -181,5 +182,12 @@ public class Portfolio {
     
     public void setTemplate(String template) {
         this.template = template;
+    }
+    public Long getViews() {
+    return views;
+    }
+    
+    public void setViews(Long views) {
+        this.views = views;
     }
 }

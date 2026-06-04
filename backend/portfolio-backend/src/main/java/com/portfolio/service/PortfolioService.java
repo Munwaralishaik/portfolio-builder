@@ -57,7 +57,7 @@ public class PortfolioService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         portfolio.setUser(user);
-
+        portfolio.setViews(0L);
         return portfolioRepository.save(portfolio);
     }
 
@@ -119,5 +119,19 @@ public class PortfolioService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return portfolioRepository.findByUser(user);
+    }
+    public Portfolio incrementViews(String slug) {
+
+    Portfolio portfolio = portfolioRepository
+            .findTopBySlugOrderByIdDesc(slug)
+            .orElseThrow(() -> new RuntimeException("Portfolio not found"));
+
+    if (portfolio.getViews() == null) {
+        portfolio.setViews(1L);
+    } else {
+        portfolio.setViews(portfolio.getViews() + 1);
+    }
+
+    return portfolioRepository.save(portfolio);
     }
 }
