@@ -186,7 +186,7 @@ public class Portfolio {
     public Long getViews() {
     return views;
     }
-    
+
     public void setViews(Long views) {
         this.views = views;
     }

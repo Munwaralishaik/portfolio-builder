@@ -916,3 +916,13 @@ if (window.location.pathname.includes("admin.html")) {
     window.location.href = "dashboard.html";
   }
 }
+const adminBtn = document.getElementById("adminBtn");
+
+if (adminBtn) {
+  const adminEmail = "mali8699031@gmail.com";
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (userEmail !== adminEmail) {
+    adminBtn.style.display = "none";
+  }
+}
