@@ -17,17 +17,25 @@ public class AdminController {
     private final PortfolioRepository portfolioRepository;
 
     public AdminController(UserRepository userRepository,
-                           PortfolioRepository portfolioRepository) {
+            PortfolioRepository portfolioRepository) {
         this.userRepository = userRepository;
         this.portfolioRepository = portfolioRepository;
     }
 
     @GetMapping("/stats")
-    public Map<String, Long> getStats() {
-        Map<String, Long> stats = new HashMap<>();
+    public Map<String, Object> getStats() {
+
+        Map<String, Object> stats = new HashMap<>();
 
         stats.put("totalUsers", userRepository.count());
         stats.put("totalPortfolios", portfolioRepository.count());
+
+        Long totalViews = portfolioRepository.findAll()
+                .stream()
+                .mapToLong(p -> p.getViews() == null ? 0 : p.getViews())
+                .sum();
+
+        stats.put("totalViews", totalViews);
 
         return stats;
     }

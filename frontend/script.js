@@ -222,9 +222,9 @@ async function loadPortfolio() {
     } else {
 
     data = JSON.parse(localStorage.getItem("portfolioData"));
-      
+
     console.log("Preview Data:", data);
-      
+
     renderPortfolio();
   }
   } catch (error) {
@@ -880,8 +880,21 @@ if (!localStorage.getItem("userEmail")) {
   ownerButtons.forEach(btn => {
     btn.style.display = "none";
   });
-}const totalUsers = document.getElementById("totalUsers");
+}
+const totalUsers = document.getElementById("totalUsers");
 const totalPortfolios = document.getElementById("totalPortfolios");
+const totalViews = document.getElementById("totalViews");
+
+if (totalUsers && totalPortfolios && totalViews) {
+  fetch("https://portfolio-backend-au16.onrender.com/api/admin/stats")
+    .then(res => res.json())
+    .then(stats => {
+      totalUsers.innerText = stats.totalUsers;
+      totalPortfolios.innerText = stats.totalPortfolios;
+      totalViews.innerText = stats.totalViews;
+    })
+    .catch(err => console.error(err));
+}
 
 if (totalUsers && totalPortfolios) {
   fetch("https://portfolio-backend-au16.onrender.com/api/admin/stats")
@@ -891,4 +904,15 @@ if (totalUsers && totalPortfolios) {
       totalPortfolios.innerText = stats.totalPortfolios;
     })
     .catch(err => console.error(err));
+}
+/* ADMIN PAGE PROTECTION */
+
+if (window.location.pathname.includes("admin.html")) {
+  const adminEmail = "mali8699031@gmail.com";
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (userEmail !== adminEmail) {
+    alert("Access Denied. Admin only.");
+    window.location.href = "dashboard.html";
+  }
 }
