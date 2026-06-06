@@ -786,6 +786,7 @@ async function loadDashboardPortfolios() {
       card.innerHTML = `
         <h3>${portfolio.name}</h3>
         <p>${portfolio.role || ""}</p>
+        <p>👁️ Views: ${portfolio.views || 0}</p>
 
         <a class="btn" href="/p/${portfolio.slug}">
           View
