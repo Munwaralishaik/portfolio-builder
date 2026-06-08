@@ -897,15 +897,6 @@ if (totalUsers && totalPortfolios && totalViews) {
     .catch(err => console.error(err));
 }
 
-if (totalUsers && totalPortfolios) {
-  fetch("https://portfolio-backend-au16.onrender.com/api/admin/stats")
-    .then(res => res.json())
-    .then(stats => {
-      totalUsers.innerText = stats.totalUsers;
-      totalPortfolios.innerText = stats.totalPortfolios;
-    })
-    .catch(err => console.error(err));
-}
 /* ADMIN PAGE PROTECTION */
 
 if (window.location.pathname.includes("admin.html")) {
@@ -925,5 +916,32 @@ if (adminBtn) {
 
   if (userEmail !== adminEmail) {
     adminBtn.style.display = "none";
+  }
+}
+async function deletePortfolio(slug) {
+
+  const confirmDelete =
+    confirm("Are you sure you want to delete this portfolio?");
+
+  if (!confirmDelete) return;
+
+  try {
+
+    await fetch(
+      `${API_URL}/api/portfolios/${slug}`,
+      {
+        method: "DELETE"
+      }
+    );
+
+    alert("Portfolio deleted successfully");
+
+    loadDashboardPortfolios();
+
+  } catch (error) {
+
+    console.error(error);
+    alert("Failed to delete portfolio");
+
   }
 }
