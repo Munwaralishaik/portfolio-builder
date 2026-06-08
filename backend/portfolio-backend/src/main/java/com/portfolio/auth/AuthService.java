@@ -1,5 +1,6 @@
 package com.portfolio.auth;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.portfolio.repository.UserRepository;
@@ -8,6 +9,7 @@ import com.portfolio.repository.UserRepository;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -18,29 +20,37 @@ public class AuthService {
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+
+        user.setPassword(
+                passwordEncoder.encode(request.getPassword()));
 
         return userRepository.save(user);
     }
 
     public User login(LoginRequest request) {
         return userRepository.findByEmail(request.getEmail())
-                .filter(user -> user.getPassword().equals(request.getPassword()))
+                .filter(user -> passwordEncoder.matches(
+                        request.getPassword(),
+                        user.getPassword()))
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
     }
+
     public String changePassword(ChangePasswordRequest request) {
 
-    User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    if (!user.getPassword().equals(request.getCurrentPassword())) {
-        throw new RuntimeException("Current password is incorrect");
-    }
+        if (!passwordEncoder.matches(
+                request.getCurrentPassword(),
+                user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
 
-    user.setPassword(request.getNewPassword());
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword()));
 
-    userRepository.save(user);
+        userRepository.save(user);
 
-    return "Password updated successfully";
+        return "Password updated successfully";
     }
 }
