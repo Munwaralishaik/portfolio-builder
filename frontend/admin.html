@@ -1,29 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<section class="builder">
-  <div class="builder-card">
-    <h1>Admin Dashboard</h1>
-    <p>Application overview</p>
+<section class="admin-page">
+
+  <div class="admin-dashboard-card">
+
+    <div class="admin-header">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>Monitor users, portfolios and platform activity</p>
+      </div>
+
+      <a href="dashboard.html" class="btn">Back To Dashboard</a>
+    </div>
+
+    <div class="admin-grid">
 
       <div class="admin-card">
+        <div class="admin-icon">👥</div>
         <h2 id="totalUsers">0</h2>
         <p>Total Users</p>
       </div>
 
       <div class="admin-card">
+        <div class="admin-icon">📁</div>
         <h2 id="totalPortfolios">0</h2>
         <p>Total Portfolios</p>
       </div>
+
+      <div class="admin-card">
+        <div class="admin-icon">👁️</div>
+        <h2 id="totalViews">0</h2>
+        <p>Total Views</p>
+      </div>
+
     </div>
 
-    <a href="dashboard.html" class="btn">Back To Dashboard</a>
   </div>
+
 </section>
 
 <script src="script.js"></script>
