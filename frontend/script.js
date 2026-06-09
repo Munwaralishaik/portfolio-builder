@@ -718,12 +718,17 @@ if (loginBtn) {
       localStorage.setItem("token", user.email);
       localStorage.setItem("userEmail", user.email);
       localStorage.setItem("userName", user.name);
+      localStorage.setItem("userRole", user.role);
 
       alert("Login Successful ✅");
 
-      window.location.href = "dashboard.html";
-
-    } catch (err) {
+      if (user.role === "ADMIN") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "dashboard.html";
+      }
+    }
+    catch (err) {
       console.error(err);
       alert("Invalid Credentials ❌");
     }
@@ -900,10 +905,9 @@ if (totalUsers && totalPortfolios && totalViews) {
 /* ADMIN PAGE PROTECTION */
 
 if (window.location.pathname.includes("admin.html")) {
-  const adminEmail = "mali8699031@gmail.com";
-  const userEmail = localStorage.getItem("userEmail");
+  const userRole = localStorage.getItem("userRole");
 
-  if (userEmail !== adminEmail) {
+  if (userRole !== "ADMIN") {
     alert("Access Denied. Admin only.");
     window.location.href = "dashboard.html";
   }

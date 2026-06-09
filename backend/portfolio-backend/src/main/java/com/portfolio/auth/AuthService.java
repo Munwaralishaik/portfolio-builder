@@ -15,16 +15,22 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public User signup(SignupRequest request) {
-        User user = new User();
+  public User signup(SignupRequest request) {
+    User user = new User();
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+    user.setName(request.getName());
+    user.setEmail(request.getEmail());
 
-        user.setPassword(
-                passwordEncoder.encode(request.getPassword()));
+    if (request.getEmail().equalsIgnoreCase("mali8699031@gmail.com")) {
+        user.setRole("ADMIN");
+    } else {
+        user.setRole("USER");
+    }
 
-        return userRepository.save(user);
+    user.setPassword(
+            passwordEncoder.encode(request.getPassword()));
+
+    return userRepository.save(user);
     }
 
     public User login(LoginRequest request) {
