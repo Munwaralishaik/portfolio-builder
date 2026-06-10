@@ -895,7 +895,9 @@ if (changePasswordBtn) {
 /* OWNER ONLY BUTTONS */
 const ownerButtons = document.querySelectorAll(".owner-only");
 
-if (!localStorage.getItem("userEmail")) {
+const loggedInEmail = localStorage.getItem("userEmail");
+
+if (!loggedInEmail || !data || loggedInEmail !== data.email) {
   ownerButtons.forEach(btn => {
     btn.style.display = "none";
   });
