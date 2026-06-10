@@ -1,22 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Signup</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<section class="builder">
-  <div class="builder-card">
-    <h1>Create Account</h1>
 
-    <input id="signupName" placeholder="Name">
-    <input id="signupEmail" placeholder="Email">
-    <input id="signupPassword" type="password" placeholder="Password">
+<section class="auth-page">
 
-    <button id="signupBtn" class="btn">Signup</button>
+  <div class="auth-container">
 
-    <p>Already have account? <a href="login.html">Login</a></p>
+    <div class="auth-left">
+      <div class="rocket">✨</div>
+      <h2>Start Your Portfolio</h2>
+      <p>Build your professional online presence and share it with recruiters.</p>
+    </div>
+
+    <div class="auth-right">
+      <div class="auth-tabs">
+        <a href="login.html">Sign In</a>
+        <a href="signup.html" class="active">Sign Up</a>
+      </div>
+
+      <h1>Create Account</h1>
+      <p class="auth-subtitle">Register to build your portfolio</p>
+
+      <input id="signupName" type="text" placeholder="Full Name">
+      <input id="signupEmail" type="email" placeholder="Email">
+      <input id="signupPassword" type="password" placeholder="Password">
+
+      <button id="signupBtn" class="btn auth-btn">Signup</button>
+
+      <p class="auth-link">
+        Already have an account?
+        <a href="login.html">Login</a>
+      </p>
+    </div>
+
   </div>
+
 </section>
 
 <script src="script.js"></script>

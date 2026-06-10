@@ -1,21 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User / Admin Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<section class="builder">
-  <div class="builder-card">
-    <h1><h1>User / Admin Login</h1></h1>
 
-    <input id="loginEmail" placeholder="Email">
-    <input id="loginPassword" type="password" placeholder="Password">
+<section class="auth-page">
 
-    <button id="loginBtn" class="btn">Login</button>
+  <div class="auth-container">
 
-    <p>Don't have account? <a href="signup.html">Signup</a></p>
+    <div class="auth-left">
+      <div class="rocket">🚀</div>
+      <h2>Welcome Back</h2>
+      <p>Create, publish, and manage professional portfolios with ease.</p>
+    </div>
+
+    <div class="auth-right">
+      <div class="auth-tabs">
+        <a href="login.html" class="active">Sign In</a>
+        <a href="signup.html">Sign Up</a>
+      </div>
+
+      <h1>User / Admin Login</h1>
+      <p class="auth-subtitle">Login to continue to your dashboard</p>
+
+      <input id="loginEmail" type="email" placeholder="Email">
+      <input id="loginPassword" type="password" placeholder="Password">
+
+      <button id="loginBtn" class="btn auth-btn">Login</button>
+
+      <p class="auth-link">
+        Don't have an account?
+        <a href="signup.html">Create Account</a>
+      </p>
+    </div>
+
   </div>
+
 </section>
 
 <script src="script.js"></script>

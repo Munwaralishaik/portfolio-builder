@@ -219,14 +219,23 @@ async function loadPortfolio() {
       data.experiences = data.experiences ? JSON.parse(data.experiences) : [];
 
       renderPortfolio();
-    } else {
+    }
+    else {
+  data = JSON.parse(localStorage.getItem("portfolioData"));
 
-    data = JSON.parse(localStorage.getItem("portfolioData"));
-
-    console.log("Preview Data:", data);
-
-    renderPortfolio();
+  if (!data) {
+    alert("No preview data found. Please create portfolio again.");
+    window.location.href = "builder.html";
+    return;
   }
+
+  data.skills = Array.isArray(data.skills) ? data.skills : [];
+  data.projects = Array.isArray(data.projects) ? data.projects : [];
+  data.certifications = Array.isArray(data.certifications) ? data.certifications : [];
+  data.experiences = Array.isArray(data.experiences) ? data.experiences : [];
+
+  renderPortfolio();
+}
   } catch (error) {
     console.error(error);
   }
@@ -283,7 +292,7 @@ function renderPortfolio() {
     previewCard.classList.add(
       (data.template || "developer") + "-template"
     );
-    startThreeBackground(data.template || "developer");
+    //startThreeBackground(data.template || "developer");
   }
 
   const setText = (id, value) => {
@@ -476,7 +485,11 @@ if (publishBtn) {
 
       alert("Portfolio Published Successfully 🚀");
 
-      window.location.href = "/p/" + savedPortfolio.slug;
+      if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") {
+      window.location.href = "public.html?id=" + savedPortfolio.slug;
+      } else {
+        window.location.href = "/p/" + savedPortfolio.slug;
+      }
 
     } catch (error) {
       console.error(error);
