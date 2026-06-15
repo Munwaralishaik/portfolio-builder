@@ -210,32 +210,38 @@ async function loadPortfolio() {
           const viewResponse = await fetch(API_URL + "/" + currentSlug + "/view", {
             method: "PUT"
           });
-        
+
           data = await viewResponse.json();
-     }
+      }
       data.skills = data.skills ? data.skills.split(",") : [];
       data.projects = data.projects ? JSON.parse(data.projects) : [];
       data.certifications = data.certifications ? JSON.parse(data.certifications) : [];
       data.experiences = data.experiences ? JSON.parse(data.experiences) : [];
 
       renderPortfolio();
+      return;
     }
-    else {
-  data = JSON.parse(localStorage.getItem("portfolioData"));
 
-  if (!data) {
-    alert("No preview data found. Please create portfolio again.");
-    window.location.href = "builder.html";
-    return;
-  }
+    // Only check for locally-saved preview data on preview.html.
+    // Without this guard, every other page (login, signup, dashboard, admin...)
+    // would also run this check, find no portfolioData, and bounce the user
+    // back to builder.html -- creating a redirect loop with the login check below.
+    if (page.includes("preview.html")) {
+      data = JSON.parse(localStorage.getItem("portfolioData"));
 
-  data.skills = Array.isArray(data.skills) ? data.skills : [];
-  data.projects = Array.isArray(data.projects) ? data.projects : [];
-  data.certifications = Array.isArray(data.certifications) ? data.certifications : [];
-  data.experiences = Array.isArray(data.experiences) ? data.experiences : [];
+      if (!data) {
+        alert("No preview data found. Please create portfolio again.");
+        window.location.href = "builder.html";
+        return;
+      }
 
-  renderPortfolio();
-}
+      data.skills = Array.isArray(data.skills) ? data.skills : [];
+      data.projects = Array.isArray(data.projects) ? data.projects : [];
+      data.certifications = Array.isArray(data.certifications) ? data.certifications : [];
+      data.experiences = Array.isArray(data.experiences) ? data.experiences : [];
+
+      renderPortfolio();
+    }
   } catch (error) {
     console.error(error);
   }
