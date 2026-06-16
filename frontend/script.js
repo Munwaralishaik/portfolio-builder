@@ -717,7 +717,6 @@ if (signupBtn) {
 }
 
 /* LOGIN */
-/* LOGIN */
 const loginBtn = document.getElementById("loginBtn");
 
 if (loginBtn) {

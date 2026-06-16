@@ -4,106 +4,396 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Build Portfolio</title>
+
+  <!-- Your original stylesheet (untouched) -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Animation styles embedded directly so nothing can override them -->
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#0a0e1a;font-family:'Segoe UI',sans-serif;color:#e0e6f0;min-height:100vh;overflow-x:hidden}
+    canvas#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+    #logoutBtn{position:fixed;top:16px;left:16px;z-index:100;background:linear-gradient(135deg,#00c6ff,#0072ff)!important;border:none;color:#fff!important;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 0 20px rgba(0,114,255,0.4);transition:all 0.3s;letter-spacing:0.5px}
+    #logoutBtn:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(0,198,255,0.6)}
+    .builder{position:relative;z-index:10;padding:60px 20px 40px;display:flex;justify-content:center}
+    .builder-card{background:rgba(16,22,40,0.85)!important;border:1px solid rgba(0,198,255,0.15)!important;border-radius:20px;padding:40px;width:100%;max-width:700px;backdrop-filter:blur(12px);box-shadow:0 0 60px rgba(0,114,255,0.08),inset 0 1px 0 rgba(255,255,255,0.06);animation:cardIn 0.8s ease both}
+    @keyframes cardIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    .builder-card h1{font-size:28px;font-weight:700;background:linear-gradient(90deg,#00c6ff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;animation:slideIn 0.6s ease 0.2s both}
+    .builder-card>p{color:rgba(180,200,230,0.6);font-size:14px;margin-bottom:28px;animation:slideIn 0.6s ease 0.3s both}
+    @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+    .form-row{display:flex;gap:12px;margin-bottom:14px}
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+    .form-group label{font-size:12px;color:rgba(0,198,255,0.8);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+    input[type=text],input[type=email],textarea,select{width:100%;background:rgba(255,255,255,0.04)!important;border:1px solid rgba(0,198,255,0.12)!important;border-radius:10px;color:#e0e6f0!important;padding:11px 14px;font-size:14px;transition:all 0.3s;outline:none;font-family:inherit}
+    input[type=text]:focus,input[type=email]:focus,textarea:focus,select:focus{border-color:rgba(0,198,255,0.5)!important;background:rgba(0,198,255,0.05)!important;box-shadow:0 0 0 3px rgba(0,198,255,0.1)}
+    input[type=text]:hover,input[type=email]:hover,textarea:hover,select:hover{border-color:rgba(0,198,255,0.25)!important}
+    select{cursor:pointer}
+    select option{background:#0d1526;color:#e0e6f0}
+    textarea{resize:vertical;min-height:90px}
+    .file-zone{border:1.5px dashed rgba(0,198,255,0.2);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;margin-bottom:14px}
+    .file-zone:hover{border-color:rgba(0,198,255,0.5);background:rgba(0,198,255,0.04)}
+    .file-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .file-zone .icon{font-size:22px;margin-bottom:6px}
+    .file-zone p{font-size:13px;color:rgba(180,200,230,0.5)}
+    .file-zone p span{color:rgba(0,198,255,0.8)}
+    .section-header{display:flex;align-items:center;gap:10px;margin:24px 0 14px}
+    .section-header h2{font-size:16px;font-weight:600;color:#a78bfa;letter-spacing:0.5px}
+    .section-header::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(167,139,250,0.3),transparent)}
+    .card-block{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;margin-bottom:10px;animation:fadeSlide 0.4s ease both}
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .add-btn,.btn.outline-btn{width:100%;background:transparent!important;border:1.5px dashed rgba(167,139,250,0.3)!important;border-radius:10px;color:rgba(167,139,250,0.8)!important;padding:10px;font-size:13px;cursor:pointer;transition:all 0.3s;margin-bottom:16px;display:block;text-align:center}
+    .add-btn:hover,.btn.outline-btn:hover{border-color:rgba(167,139,250,0.7)!important;background:rgba(167,139,250,0.06)!important;color:#a78bfa!important}
+    .submit-btn,.btn[type=submit]{width:100%;padding:14px;border:none!important;border-radius:12px;background:linear-gradient(135deg,#0072ff,#00c6ff)!important;color:#fff!important;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.5px;position:relative;overflow:hidden;transition:all 0.3s;margin-top:10px}
+    .submit-btn::before,.btn[type=submit]::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#a78bfa,#00c6ff);opacity:0;transition:opacity 0.3s}
+    .submit-btn:hover::before,.btn[type=submit]:hover::before{opacity:1}
+    .submit-btn:hover,.btn[type=submit]:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,114,255,0.4)}
+    .submit-btn span,.btn[type=submit] span{position:relative;z-index:1}
+    .glowing-line{height:1px;background:linear-gradient(90deg,transparent,rgba(0,198,255,0.4),transparent);margin:20px 0;animation:pulse-line 3s ease-in-out infinite}
+    @keyframes pulse-line{0%,100%{opacity:0.3}50%{opacity:1}}
+    .floating-tag{display:inline-block;background:rgba(0,198,255,0.1);border:1px solid rgba(0,198,255,0.2);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(0,198,255,0.8);margin:0 4px 6px 0;animation:tagIn 0.4s ease both}
+    @keyframes tagIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+    .tags-preview{margin-top:8px;min-height:28px}
+    .char-hint{font-size:11px;color:rgba(180,200,230,0.3);text-align:right;margin-top:4px}
+    .input-wrap{position:relative}
+    .input-wrap .input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none}
+    .input-wrap input{padding-left:36px}
+    .progress-wrap{margin-top:16px}
+    .progress-label{font-size:11px;color:rgba(180,200,230,0.5);margin-bottom:5px}
+    .progress-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#0072ff,#a78bfa);border-radius:4px;transition:width 0.6s ease}
+    /* project-input / cert-input / experience-input inherit card-block look */
+    .project-input,.cert-input,.experience-input{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;flex-direction:column;gap:12px}
+    form{display:flex;flex-direction:column;gap:0}
+  </style>
 </head>
 <body>
-  
+
   <canvas id="bg"></canvas>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  
+
   <button id="logoutBtn" class="btn">Logout</button>
-  
-<section class="builder">
-  <div class="builder-card">
-    <h1>Build Your Portfolio</h1>
-    <p>Enter your details below</p>
 
-    <form id="portfolioForm">
-      <input type="file" id="profileImage" accept="image/*">
-      <div class="form-group">
-      <label>Upload Resume (PDF)</label>
-      <input type="file" id="resumeFile" accept=".pdf">
-      </div>
-      <input type="text" id="name" placeholder="Full Name" required>
-      <input type="text" id="role" placeholder="Role / Title" required>
-     <label>Choose Template</label>
+  <section class="builder">
+    <div class="builder-card">
+      <h1>Build Your Portfolio</h1>
+      <p>Enter your details below</p>
 
-    <select id="template">
-      <option value="developer">Developer Theme</option>
-      <option value="data">Data Analyst Theme</option>
-      <option value="minimal">Minimal Theme</option>
-    </select>
-      <textarea id="about" placeholder="About Me" rows="5" required></textarea>
+      <form id="portfolioForm">
 
-
-      <h2>Skills</h2>
-      <input type="text" id="skills" placeholder="Skills separated by comma">
-      <input type="text" id="github" placeholder="GitHub URL">
-      <input type="text" id="linkedin" placeholder="LinkedIn URL">
-
-      <h2>Projects</h2>
-
-    <div id="projectsContainer">
-      <div class="project-input">
-        <input type="text" class="projectTitle" placeholder="Project Title">
-        <textarea class="projectDescription" placeholder="Project Description" rows="4"></textarea>
-        <input type="text" class="projectTech" placeholder="Technologies, comma separated">
-        <input type="text" class="projectLink" placeholder="Project / GitHub Link">
-      </div>
-    </div>
-
-    <button type="button" class="btn outline-btn" id="addProjectBtn">
-      + Add Another Project
-    </button>
-
-      <input type="email" id="email" placeholder="Email">
-      <input type="text" id="phone" placeholder="Phone Number">
-
-      <h2>Certifications</h2>
-
-      <div id="certificationsContainer">
-      
-        <div class="cert-input">
-        
-          <input type="text"
-            class="certTitle"
-            placeholder="Certificate Title">
-        
-          <input type="text"
-            class="certProvider"
-            placeholder="Provider / Organization">
-        
-          <input type="text"
-            class="certYear"
-            placeholder="Year">
+        <!-- Profile Photo -->
+        <div class="file-zone" id="avatarZone">
+          <input type="file" id="profileImage" accept="image/*">
+          <div class="icon" id="avatarIcon">📷</div>
+          <p id="avatarText">Drop profile photo or <span>browse</span></p>
         </div>
-      </div>
-      <button type="button"class="btn outline-btn" id="addCertBtn">
-        + Add Another Certificate
-      </button>
 
-      <h2>Experience</h2>
+        <!-- Resume -->
+        <div class="form-group">
+          <label>Upload Resume (PDF)</label>
+          <div class="file-zone" style="padding:12px">
+            <input type="file" id="resumeFile" accept=".pdf">
+            <p id="resumeText">📄 Drop PDF or <span>browse</span></p>
+          </div>
+        </div>
 
-<div id="experienceContainer">
-  <div class="experience-input">
-    <input type="text" class="expTitle" placeholder="Experience Title">
-    <input type="text" class="expYear" placeholder="Year / Duration">
-    <textarea class="expDescription" placeholder="Description" rows="4"></textarea>
-  </div>
-</div>
+        <!-- Name & Role -->
+        <div class="form-row">
+          <div style="flex:1">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="name" placeholder="Full Name" required>
+            </div>
+          </div>
+          <div style="flex:1">
+            <div class="form-group">
+              <label>Role / Title</label>
+              <input type="text" id="role" placeholder="Role / Title" required>
+            </div>
+          </div>
+        </div>
 
-<button type="button" class="btn outline-btn" id="addExperienceBtn">
-  + Add Another Experience
-</button>
+        <!-- Template -->
+        <div class="form-group">
+          <label>Choose Template</label>
+          <select id="template">
+            <option value="developer">Developer Theme</option>
+            <option value="data">Data Analyst Theme</option>
+            <option value="minimal">Minimal Theme</option>
+          </select>
+        </div>
 
-      <button type="submit" class="btn">Generate Portfolio</button>
+        <!-- About -->
+        <div class="form-group">
+          <label>About Me</label>
+          <textarea id="about" placeholder="About Me" rows="5" required maxlength="500"></textarea>
+          <div class="char-hint"><span id="charCount">0</span>/500</div>
+        </div>
 
-    </form>
-    
-  </div>
-</section>
+        <div class="glowing-line"></div>
 
-<script src="script.js"></script>
+        <!-- Skills -->
+        <div class="section-header"><h2>Skills</h2></div>
+        <div class="form-group">
+          <label>Skills (comma separated)</label>
+          <input type="text" id="skills" placeholder="Skills separated by comma">
+          <div class="tags-preview" id="skillTags"></div>
+        </div>
+
+        <!-- Social -->
+        <div class="form-row">
+          <div style="flex:1">
+            <div class="form-group">
+              <label>GitHub URL</label>
+              <div class="input-wrap">
+                <span class="input-icon">🐙</span>
+                <input type="text" id="github" placeholder="GitHub URL">
+              </div>
+            </div>
+          </div>
+          <div style="flex:1">
+            <div class="form-group">
+              <label>LinkedIn URL</label>
+              <div class="input-wrap">
+                <span class="input-icon">💼</span>
+                <input type="text" id="linkedin" placeholder="LinkedIn URL">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glowing-line"></div>
+
+        <!-- Projects -->
+        <div class="section-header"><h2>Projects</h2></div>
+        <div id="projectsContainer">
+          <div class="project-input">
+            <input type="text" class="projectTitle" placeholder="Project Title">
+            <textarea class="projectDescription" placeholder="Project Description" rows="4"></textarea>
+            <input type="text" class="projectTech" placeholder="Technologies, comma separated">
+            <input type="text" class="projectLink" placeholder="Project / GitHub Link">
+          </div>
+        </div>
+        <button type="button" class="btn outline-btn" id="addProjectBtn">+ Add Another Project</button>
+
+       
+
+        <!-- Certifications -->
+        <div class="section-header"><h2>Certifications</h2></div>
+        <div id="certificationsContainer">
+          <div class="cert-input">
+            <input type="text" class="certTitle" placeholder="Certificate Title">
+            <input type="text" class="certProvider" placeholder="Provider / Organization">
+            <input type="text" class="certYear" placeholder="Year">
+          </div>
+        </div>
+        <button type="button" class="btn outline-btn" id="addCertBtn">+ Add Another Certificate</button>
+
+        <!-- Experience -->
+        <div class="section-header"><h2>Experience</h2></div>
+        <div id="experienceContainer">
+          <div class="experience-input">
+            <input type="text" class="expTitle" placeholder="Experience Title">
+            <input type="text" class="expYear" placeholder="Year / Duration">
+            <textarea class="expDescription" placeholder="Description" rows="4"></textarea>
+          </div>
+        </div>
+        <button type="button" class="btn outline-btn" id="addExperienceBtn">+ Add Another Experience</button>
+        <div class="glowing-line"></div>
+         <!-- Contact -->
+        <div class="form-row">
+          <div style="flex:1">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="email" placeholder="Email">
+            </div>
+          </div>
+          <div style="flex:1">
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" id="phone" placeholder="Phone Number">
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-wrap">
+          <div class="progress-label">Profile completion: <span id="completionPct">0%</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        </div>
+
+        <button type="submit" class="btn submit-btn"><span> Generate Portfolio 🐦‍🔥</span></button>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- Your original script — handles all API, auth, submit, publish -->
+  <script src="script.js"></script>
+
+  <!-- Animation script embedded directly -->
+  <script>
+  // ── CANVAS STARFIELD ──────────────────────────────────────
+  (function(){
+    const canvas = document.getElementById('bg');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    function resize(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const stars = [];
+    for(let i=0;i<180;i++){
+      stars.push({
+        x:Math.random()*2000, y:Math.random()*2000,
+        r:Math.random()*1.2+0.2, a:Math.random(),
+        speed:Math.random()*0.003+0.001,
+        twinkle:Math.random()*Math.PI*2
+      });
+    }
+
+    const particles = [];
+    for(let i=0;i<18;i++){
+      particles.push({
+        x:Math.random()*2000, y:Math.random()*2000,
+        vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3,
+        r:Math.random()*2+1, a:Math.random()*0.4+0.1,
+        hue:Math.random()>0.5?200:260
+      });
+    }
+
+    let t=0;
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle='#0a0e1a';
+      ctx.fillRect(0,0,W,H);
+      t+=0.01;
+
+      stars.forEach(s=>{
+        s.twinkle+=s.speed;
+        const alpha=s.a*(0.5+0.5*Math.sin(s.twinkle));
+        ctx.beginPath();
+        ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(200,220,255,${alpha})`;
+        ctx.fill();
+      });
+
+      particles.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+        if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+        const grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+        grd.addColorStop(0,`hsla(${p.hue},100%,70%,${p.a})`);
+        grd.addColorStop(1,'transparent');
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2);
+        ctx.fillStyle=grd;
+        ctx.fill();
+      });
+
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const dx=particles[i].x-particles[j].x;
+          const dy=particles[i].y-particles[j].y;
+          const dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<180){
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x,particles[i].y);
+            ctx.lineTo(particles[j].x,particles[j].y);
+            ctx.strokeStyle=`rgba(0,180,255,${0.08*(1-dist/180)})`;
+            ctx.lineWidth=0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      const scanY=H*((t*0.03)%1);
+      const grad=ctx.createLinearGradient(0,scanY-60,0,scanY+60);
+      grad.addColorStop(0,'transparent');
+      grad.addColorStop(0.5,'rgba(0,198,255,0.03)');
+      grad.addColorStop(1,'transparent');
+      ctx.fillStyle=grad;
+      ctx.fillRect(0,scanY-60,W,120);
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ── CHAR COUNTER ──────────────────────────────────────────
+  const aboutEl = document.getElementById('about');
+  if(aboutEl){
+    aboutEl.addEventListener('input', function(){
+      const el = document.getElementById('charCount');
+      if(el) el.textContent = this.value.length;
+      updateAnimProgress();
+    });
+  }
+
+  // ── LIVE SKILL TAGS ───────────────────────────────────────
+  const skillsEl = document.getElementById('skills');
+  if(skillsEl){
+    skillsEl.addEventListener('input', function(){
+      const container = document.getElementById('skillTags');
+      if(!container) return;
+      const skills = this.value.split(',').map(s=>s.trim()).filter(Boolean);
+      container.innerHTML = '';
+      skills.forEach((s,i)=>{
+        const tag = document.createElement('span');
+        tag.className = 'floating-tag';
+        tag.style.animationDelay = (i*0.05)+'s';
+        tag.textContent = s;
+        container.appendChild(tag);
+      });
+      updateAnimProgress();
+    });
+  }
+
+  // ── PROGRESS BAR ──────────────────────────────────────────
+  ['name','role','email','phone','github','linkedin'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateAnimProgress);
+  });
+
+  function updateAnimProgress(){
+    const fields = ['name','role','about','skills','email'];
+    const filled = fields.filter(id=>{
+      const el = document.getElementById(id);
+      return el && el.value.trim().length > 0;
+    }).length;
+    const pct = Math.round((filled/fields.length)*100);
+    const fill = document.getElementById('progressFill');
+    const label = document.getElementById('completionPct');
+    if(fill) fill.style.width = pct+'%';
+    if(label) label.textContent = pct+'%';
+  }
+
+  // ── FILE UPLOAD FEEDBACK ──────────────────────────────────
+  const profileImageEl = document.getElementById('profileImage');
+  if(profileImageEl){
+    profileImageEl.addEventListener('change', function(){
+      if(this.files[0]){
+        const icon = document.getElementById('avatarIcon');
+        const text = document.getElementById('avatarText');
+        if(icon) icon.textContent = '🖼️';
+        if(text) text.innerHTML = `✅ <span>${this.files[0].name}</span>`;
+      }
+    });
+  }
+
+  const resumeFileEl = document.getElementById('resumeFile');
+  if(resumeFileEl){
+    resumeFileEl.addEventListener('change', function(){
+      if(this.files[0]){
+        const text = document.getElementById('resumeText');
+        if(text) text.innerHTML = `✅ <span>${this.files[0].name}</span>`;
+      }
+    });
+  }
+  </script>
 
 </body>
 </html>

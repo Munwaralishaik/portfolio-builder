@@ -1,42 +1,596 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — DevFolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #050816;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: rgba(10, 17, 40, 0.95);
+      border-right: 1px solid rgba(56,189,248,0.1);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 20px;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+      animation: slideInLeft 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); opacity: 0; }
+      to   { transform: translateX(0);     opacity: 1; }
+    }
+
+    .sidebar-logo {
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #fff, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 36px;
+      padding: 0 8px;
+    }
+
+    .sidebar-section {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #475569;
+      padding: 0 8px;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+    .sidebar-section:first-of-type { margin-top: 0; }
+
+    .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; }
+    .nav-item.active {
+      background: rgba(56,189,248,0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56,189,248,0.2);
+    }
+    .nav-icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 10px;
+    }
+    .user-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: white;
+      flex-shrink: 0;
+    }
+    .user-name { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; }
+    .user-role { font-size: 0.72rem; color: #64748b; }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(5,8,22,0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      animation: fadeDown 0.5s 0.2s both;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .topbar-left h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .topbar-left p { font-size: 0.8rem; color: #64748b; }
+
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .topbar-btn {
+      padding: 8px 18px;
+      border-radius: 9px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-create {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #020617;
+    }
+    .btn-create:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56,189,248,0.35); }
+    .btn-logout {
+      background: rgba(255,255,255,0.06);
+      color: #94a3b8;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.2); }
+
+    /* ── CONTENT ── */
+    .content {
+      padding: 32px;
+      flex: 1;
+    }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      padding: 24px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.6s both;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(56,189,248,0.2);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.15s; }
+    .stat-card:nth-child(3) { animation-delay: 0.2s; }
+    .stat-card:nth-child(4) { animation-delay: 0.25s; }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      top: -20px; right: -20px;
+      filter: blur(30px);
+      opacity: 0.4;
+    }
+    .stat-card.c-cyan::before   { background: #38bdf8; }
+    .stat-card.c-purple::before { background: #8b5cf6; }
+    .stat-card.c-green::before  { background: #22c55e; }
+    .stat-card.c-pink::before   { background: #ec4899; }
+
+    .stat-icon {
+      font-size: 1.4rem;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-card.c-cyan   .stat-value { color: #38bdf8; }
+    .stat-card.c-purple .stat-value { color: #a78bfa; }
+    .stat-card.c-green  .stat-value { color: #4ade80; }
+    .stat-card.c-pink   .stat-value { color: #f472b6; }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* ── PORTFOLIOS SECTION ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .section-header span {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* Portfolio cards rendered by JS */
+    #dashboardPortfolios {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .dashboard-card {
+      padding: 24px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: all 0.3s;
+      animation: fadeUp 0.5s both;
+      position: relative;
+      overflow: hidden;
+    }
+    .dashboard-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #38bdf8, #8b5cf6);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(56,189,248,0.2);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    }
+    .dashboard-card:hover::before { opacity: 1; }
+
+    .dashboard-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 6px;
+    }
+    .dashboard-card p {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card-views {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: #38bdf8;
+      background: rgba(56,189,248,0.1);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 10px;
+      margin-bottom: 16px;
+    }
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .card-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .card-btn.view   { background: rgba(56,189,248,0.12); color: #38bdf8; }
+    .card-btn.edit   { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    .card-btn.delete { background: rgba(239,68,68,0.1);  color: #f87171; }
+    .card-btn:hover  { filter: brightness(1.2); transform: translateY(-1px); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      border-radius: 16px;
+      border: 1px dashed rgba(255,255,255,0.1);
+      animation: fadeUp 0.5s 0.3s both;
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .empty-state h4 { font-size: 1rem; font-weight: 600; color: #94a3b8; margin-bottom: 8px; }
+    .empty-state p  { font-size: 0.85rem; color: #475569; margin-bottom: 24px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 60;
+      background: rgba(10,17,40,0.9);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      color: #38bdf8;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-toggle { display: block; }
+      .main { margin-left: 0; }
+      .topbar { padding: 0 16px 0 56px; }
+      .content { padding: 20px 16px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
 <body>
 
-<section class="builder">
+<!-- Mobile toggle -->
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
-  <div class="builder-card">
-    <h1>My Dashboard</h1>
-    <h3 id="welcomeUser"></h3>
-    <h4 id="portfolioCount"></h4>
-    <p>Manage your portfolios</p>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">⚡ DevFolio</div>
 
-    <a href="builder.html" class="btn">+ Create New Portfolio</a>
-
-    <br><br>
-
-    <a href="profile.html" class="btn">
-      My Profile
+  <p class="sidebar-section">Main</p>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <span class="nav-icon">🏠</span> Dashboard
     </a>
-        <a href="admin.html" id="adminBtn" class="btn">
-      Admin Dashboard
+    <a href="builder.html" class="nav-item">
+      <span class="nav-icon">✏️</span> Create Portfolio
     </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span> My Profile
+    </a>
+  </nav>
 
-    <div id="dashboardPortfolios" style="margin-top:30px;"></div>
-
-    <button class="btn delete-btn"
-    onclick="deletePortfolio('${portfolio.slug}')">
-    Delete
+  <p class="sidebar-section">Account</p>
+  <nav class="sidebar-nav">
+    <a href="admin.html" id="adminBtn" class="nav-item" style="display:none">
+      <span class="nav-icon">🛡️</span> Admin Panel
+    </a>
+    <button id="logoutBtn" class="nav-item">
+      <span class="nav-icon">🚪</span> Logout
     </button>
-    
-    <button id="logoutBtn" class="btn logout-btn">Logout</button>
-  </div>
-</section>
+  </nav>
 
-<div id="dashboardPortfolios"></div>
+  <div class="sidebar-bottom">
+    <div class="user-pill">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div>
+        <div class="user-name" id="sidebarName">Loading...</div>
+        <div class="user-role">Portfolio Builder</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2>My Dashboard</h2>
+      <p id="welcomeUser">Welcome back 👋</p>
+    </div>
+    <div class="topbar-right">
+      <a href="builder.html" class="topbar-btn btn-create">+ New Portfolio</a>
+      <button id="logoutBtnTop" class="topbar-btn btn-logout">Logout</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card c-cyan">
+        <span class="stat-icon">📁</span>
+        <div class="stat-value" id="statPortfolios">0</div>
+        <div class="stat-label">Total Portfolios</div>
+      </div>
+      <div class="stat-card c-purple">
+        <span class="stat-icon">👁️</span>
+        <div class="stat-value" id="statViews">0</div>
+        <div class="stat-label">Total Views</div>
+      </div>
+      <div class="stat-card c-green">
+        <span class="stat-icon">🚀</span>
+        <div class="stat-value" id="statPublished">0</div>
+        <div class="stat-label">Published</div>
+      </div>
+      <div class="stat-card c-pink">
+        <span class="stat-icon">✨</span>
+        <div class="stat-value">Free</div>
+        <div class="stat-label">Current Plan</div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIOS -->
+    <div class="section-header">
+      <h3>Your Portfolios</h3>
+      <span id="portfolioCount"></span>
+    </div>
+
+    <div id="dashboardPortfolios"></div>
+
+  </main>
+</div>
+
 <script src="script.js"></script>
+<script>
+  /* ── SIDEBAR USER INFO ── */
+  const userName = localStorage.getItem('userName') || 'User';
+  const userEmail = localStorage.getItem('userEmail') || '';
+  const userRole = localStorage.getItem('userRole') || '';
+
+  document.getElementById('welcomeUser').textContent = 'Welcome back, ' + userName + ' 👋';
+  document.getElementById('sidebarName').textContent = userName;
+  document.getElementById('userAvatar').textContent = userName.charAt(0).toUpperCase();
+
+  /* Admin button */
+  if (userRole === 'ADMIN') {
+    document.getElementById('adminBtn').style.display = 'flex';
+  }
+
+  /* Logout (both buttons) */
+  ['logoutBtn', 'logoutBtnTop'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userRole');
+      window.location.href = 'login.html';
+    });
+  });
+
+  /* ── PATCH: override loadDashboardPortfolios to update stats + use new card markup ── */
+  const _origLoad = window.loadDashboardPortfolios;
+
+  async function loadDashboardPortfolios() {
+    try {
+      const userEmail = localStorage.getItem('userEmail');
+      const response = await fetch('https://portfolio-backend-au16.onrender.com/api/portfolios/my/' + userEmail);
+      const portfolios = await response.json();
+
+      /* Update stats */
+      document.getElementById('statPortfolios').textContent = portfolios.length;
+      document.getElementById('statPublished').textContent = portfolios.length;
+      document.getElementById('portfolioCount').textContent = portfolios.length + ' portfolio' + (portfolios.length !== 1 ? 's' : '');
+
+      const totalViews = portfolios.reduce((sum, p) => sum + (p.views || 0), 0);
+      document.getElementById('statViews').textContent = totalViews;
+
+      const container = document.getElementById('dashboardPortfolios');
+      container.innerHTML = '';
+
+      if (!portfolios.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <span class="empty-icon">📭</span>
+            <h4>No portfolios yet</h4>
+            <p>Create your first portfolio and share it with the world.</p>
+            <a href="builder.html" class="topbar-btn btn-create" style="display:inline-flex;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#020617;font-weight:700;font-size:0.9rem;text-decoration:none;">
+              + Create your first portfolio
+            </a>
+          </div>`;
+        return;
+      }
+
+      portfolios.slice().reverse().forEach((portfolio, i) => {
+        const card = document.createElement('div');
+        card.className = 'dashboard-card';
+        card.style.animationDelay = (i * 0.07) + 's';
+        card.innerHTML = `
+          <h3>${portfolio.name}</h3>
+          <p>${portfolio.role || 'No role set'}</p>
+          <div class="card-views">👁️ ${portfolio.views || 0} views</div>
+          <div class="card-actions">
+            <a class="card-btn view" href="/p/${portfolio.slug}" target="_blank">View →</a>
+            <a class="card-btn edit" href="/builder.html?id=${portfolio.slug}">Edit</a>
+            <button class="card-btn delete" data-slug="${portfolio.slug}">Delete</button>
+          </div>`;
+        container.appendChild(card);
+      });
+
+      container.querySelectorAll('.delete').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          if (!confirm('Delete this portfolio?')) return;
+          await fetch('https://portfolio-backend-au16.onrender.com/api/portfolios/' + this.dataset.slug, { method: 'DELETE' });
+          loadDashboardPortfolios();
+        });
+      });
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  loadDashboardPortfolios();
+
+  /* ── MOBILE SIDEBAR ── */
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+</script>
+
 </body>
 </html>
