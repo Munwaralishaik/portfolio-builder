@@ -669,30 +669,39 @@ const signupBtn = document.getElementById("signupBtn");
 
 if (signupBtn) {
   signupBtn.addEventListener("click", async () => {
-
     const name = document.getElementById("signupName").value;
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
+
+    // Show spinner
+    signupBtn.disabled = true;
+    signupBtn.innerHTML = `
+      <span style="display:inline-flex;align-items:center;gap:8px">
+        <svg width="18" height="18" viewBox="0 0 18 18" style="animation:spin .7s linear infinite">
+          <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
+          <path d="M9 2 A7 7 0 0 1 16 9" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        Creating account...
+      </span>`;
+
+    if (!document.getElementById("spin-style")) {
+      const s = document.createElement("style");
+      s.id = "spin-style";
+      s.textContent = "@keyframes spin { to { transform: rotate(360deg); } }";
+      document.head.appendChild(s);
+    }
 
     try {
       const response = await fetch(
         "https://portfolio-backend-au16.onrender.com/api/auth/signup",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            password
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Signup failed");
-      }
+      if (!response.ok) throw new Error("Signup failed");
 
       alert("Signup Successful ✅");
       window.location.href = "login.html";
@@ -700,40 +709,53 @@ if (signupBtn) {
     } catch (err) {
       console.error(err);
       alert("Signup Failed ❌");
+    } finally {
+      signupBtn.disabled = false;
+      signupBtn.innerHTML = "Signup";
     }
   });
 }
 
 /* LOGIN */
+/* LOGIN */
 const loginBtn = document.getElementById("loginBtn");
 
 if (loginBtn) {
   loginBtn.addEventListener("click", async () => {
-
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
+
+    // Show spinner
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = `
+      <span style="display:inline-flex;align-items:center;gap:8px">
+        <svg width="18" height="18" viewBox="0 0 18 18" style="animation:spin .7s linear infinite">
+          <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
+          <path d="M9 2 A7 7 0 0 1 16 9" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        Signing in...
+      </span>`;
+
+    if (!document.getElementById("spin-style")) {
+      const s = document.createElement("style");
+      s.id = "spin-style";
+      s.textContent = "@keyframes spin { to { transform: rotate(360deg); } }";
+      document.head.appendChild(s);
+    }
 
     try {
       const response = await fetch(
         "https://portfolio-backend-au16.onrender.com/api/auth/login",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email,
-            password
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
+      if (!response.ok) throw new Error("Login failed");
 
       const user = await response.json();
-
       localStorage.setItem("token", user.email);
       localStorage.setItem("userEmail", user.email);
       localStorage.setItem("userName", user.name);
@@ -746,10 +768,12 @@ if (loginBtn) {
       } else {
         window.location.href = "dashboard.html";
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
       alert("Invalid Credentials ❌");
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = "Login";
     }
   });
 }
