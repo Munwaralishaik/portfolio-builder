@@ -1,42 +1,497 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Profile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#050816;color:#e0e6f0;font-family:'Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden}
+    #bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+    .corner-deco{position:fixed;z-index:1;pointer-events:none}
+    .corner-deco.tl{top:0;left:0;width:220px;height:220px;background:radial-gradient(circle at top left,rgba(0,198,255,0.08),transparent 70%)}
+    .corner-deco.br{bottom:0;right:0;width:260px;height:260px;background:radial-gradient(circle at bottom right,rgba(167,139,250,0.08),transparent 70%)}
+
+    /* ── PAGE LAYOUT ── */
+    .profile-page{
+      position:relative;z-index:10;
+      min-height:100vh;
+      display:flex;align-items:center;justify-content:center;
+      padding:40px 20px;
+    }
+
+    /* ── MAIN CARD ── */
+    .profile-card{
+      width:100%;max-width:480px;
+      background:rgba(10,16,35,0.9);
+      border:1px solid rgba(0,198,255,0.12);
+      border-radius:28px;
+      overflow:hidden;
+      backdrop-filter:blur(16px);
+      box-shadow:0 0 80px rgba(0,114,255,0.1);
+      animation:cardIn 0.8s cubic-bezier(0.22,1,0.36,1) both;
+      position:relative;
+    }
+    .profile-card::before{
+      content:'';position:absolute;top:0;left:10%;width:80%;height:2px;
+      background:linear-gradient(90deg,transparent,#00c6ff,#a78bfa,transparent);
+      animation:borderGlow 3s ease-in-out infinite;
+    }
+    @keyframes borderGlow{0%,100%{opacity:0.4}50%{opacity:1}}
+    @keyframes cardIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── HERO SECTION (pic + name + email) ── */
+    .profile-hero{
+      background:linear-gradient(160deg,rgba(0,114,255,0.12),rgba(167,139,250,0.08));
+      padding:40px 32px 32px;
+      display:flex;flex-direction:column;align-items:center;
+      position:relative;overflow:hidden;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .profile-hero::after{
+      content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(0,198,255,0.04),transparent);
+      animation:shimmer 4s ease-in-out infinite;
+    }
+    @keyframes shimmer{0%{left:-100%}100%{left:200%}}
+
+    /* Avatar */
+    .avatar-ring{position:relative;
+      width:96px;height:96px;border-radius:50%;
+      padding:3px;
+      background:linear-gradient(135deg,#00c6ff,#a78bfa);
+      margin-bottom:16px;
+      animation:avatarGlow 3s ease-in-out infinite;
+      position:relative;z-index:1;
+    }
+    @keyframes avatarGlow{
+      0%,100%{box-shadow:0 0 20px rgba(0,198,255,0.3)}
+      50%{box-shadow:0 0 50px rgba(0,198,255,0.6),0 0 80px rgba(167,139,250,0.3)}
+    }
+    .avatar-inner{
+      width:100%;height:100%;border-radius:50%;
+      background:rgba(10,16,35,0.9);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;font-size:36px;font-weight:700;color:#00c6ff;
+    }
+    .avatar-inner img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+
+    .hero-name{
+      font-size:22px;font-weight:700;
+      background:linear-gradient(90deg,#00c6ff,#a78bfa);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-bottom:5px;text-align:center;
+    }
+    .hero-email{
+      font-size:13px;color:rgba(180,200,230,0.5);
+      display:flex;align-items:center;gap:6px;
+    }
+    .hero-email::before{content:'📧';font-size:12px}
+
+    /* ── MENU ITEMS ── */
+    .profile-menu{padding:12px 0}
+
+    .menu-item{
+      display:flex;align-items:center;gap:14px;
+      padding:16px 28px;cursor:pointer;
+      transition:all 0.25s ease;
+      border-bottom:1px solid rgba(255,255,255,0.04);
+      position:relative;
+    }
+    .menu-item:last-child{border-bottom:none}
+    .menu-item::before{
+      content:'';position:absolute;left:0;top:0;bottom:0;width:0;
+      background:linear-gradient(90deg,rgba(0,198,255,0.12),transparent);
+      transition:width 0.3s;
+    }
+    .menu-item:hover::before{width:100%}
+    .menu-item:hover{background:rgba(0,198,255,0.03)}
+    .menu-item:hover .menu-icon{transform:scale(1.15)}
+    .menu-item:hover .menu-arrow{opacity:1;transform:translateX(4px)}
+
+    .menu-icon{
+      width:40px;height:40px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;flex-shrink:0;
+      transition:transform 0.3s;
+    }
+    .menu-icon.cyan{background:rgba(0,198,255,0.1);border:1px solid rgba(0,198,255,0.2)}
+    .menu-icon.purple{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2)}
+    .menu-icon.green{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2)}
+    .menu-icon.red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)}
+    .menu-icon.blue{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2)}
+
+    .menu-text{flex:1}
+    .menu-label{font-size:14px;font-weight:600;color:#e0e6f0;margin-bottom:2px}
+    .menu-sub{font-size:11px;color:rgba(180,200,230,0.4);letter-spacing:0.3px}
+    .menu-arrow{font-size:14px;color:rgba(180,200,230,0.3);opacity:0.5;transition:all 0.3s}
+
+    /* ── PASSWORD PANEL (collapsible) ── */
+    .pwd-panel{
+      display:none;
+      background:rgba(0,0,0,0.2);
+      border-top:1px solid rgba(255,255,255,0.05);
+      padding:20px 28px;
+      animation:panelSlide 0.3s ease both;
+    }
+    .pwd-panel.open{display:block}
+    @keyframes panelSlide{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+    .pwd-input-wrap{position:relative;margin-bottom:12px}
+    .pwd-input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
+    .pwd-input{
+      width:100%;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(0,198,255,0.12);
+      border-radius:10px;color:#e0e6f0;
+      padding:11px 14px 11px 38px;font-size:13px;
+      font-family:inherit;outline:none;transition:all 0.3s;
+    }
+    .pwd-input:focus{border-color:rgba(0,198,255,0.45);background:rgba(0,198,255,0.05);box-shadow:0 0 0 3px rgba(0,198,255,0.1)}
+    .pwd-input::placeholder{color:rgba(180,200,230,0.3)}
+
+    .strength-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:3px;margin-bottom:4px;overflow:hidden}
+    .strength-fill{height:100%;border-radius:3px;width:0%;transition:all 0.4s}
+    .strength-label{font-size:10px;color:rgba(180,200,230,0.4);text-align:right;margin-bottom:12px}
+
+    .pwd-actions{display:flex;gap:10px}
+    .pwd-btn{
+      flex:1;padding:10px;border:none;border-radius:10px;
+      font-size:13px;font-weight:600;cursor:pointer;
+      font-family:inherit;transition:all 0.3s;
+    }
+    .pwd-btn.primary{background:linear-gradient(135deg,#0072ff,#00c6ff);color:#fff}
+    .pwd-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,114,255,0.35)}
+    .pwd-btn.secondary{background:rgba(255,255,255,0.05);color:rgba(180,200,230,0.7);border:1px solid rgba(255,255,255,0.1)}
+    .pwd-btn.secondary:hover{background:rgba(255,255,255,0.09)}
+
+    /* forgot password link */
+    .forgot-link{
+      display:block;text-align:center;margin-top:10px;
+      font-size:12px;color:rgba(0,198,255,0.6);
+      text-decoration:none;cursor:pointer;transition:color 0.2s;
+    }
+    .forgot-link:hover{color:#00c6ff}
+
+    /* ── TOAST ── */
+    #toast{
+      position:fixed;top:24px;right:24px;z-index:999;
+      border-radius:12px;padding:14px 20px;
+      font-size:13px;display:none;align-items:center;gap:8px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.3);
+    }
+    @keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+
+    .avatar-hint{font-size:11px;color:rgba(0,198,255,0.5);margin-top:6px;margin-bottom:12px;letter-spacing:0.5px;text-align:center}
+    .avatar-overlay{
+      position:absolute;top:0;left:0;width:100%;height:100%;
+      border-radius:50%;
+      background:rgba(0,0,0,0.5);
+      display:flex;align-items:center;justify-content:center;
+      font-size:24px;opacity:0;transition:opacity 0.3s;
+      pointer-events:none;
+    }
+    .avatar-ring:hover .avatar-overlay{opacity:1}
+    .avatar-ring:hover .avatar-inner{opacity:0.7}
+    .avatar-inner{position:relative;transition:opacity 0.3s;width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:36px;font-weight:700;color:#00c6ff;background:rgba(10,16,35,0.9)}
+
+    /* ── FORGOT PASSWORD MODAL ── */
+    #forgotModal{
+      position:fixed;inset:0;z-index:200;
+      background:rgba(2,4,14,0.85);backdrop-filter:blur(8px);
+      display:none;align-items:center;justify-content:center;
+    }
+    #forgotModal.open{display:flex;animation:fadeIn 0.3s ease both}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .forgot-card{
+      background:rgba(10,16,35,0.95);
+      border:1px solid rgba(0,198,255,0.2);
+      border-radius:20px;padding:36px;width:100%;max-width:380px;
+      animation:cardIn 0.4s ease both;text-align:center;
+    }
+    .forgot-card h3{
+      font-size:18px;font-weight:700;margin-bottom:8px;
+      background:linear-gradient(90deg,#00c6ff,#a78bfa);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .forgot-card p{font-size:13px;color:rgba(180,200,230,0.5);margin-bottom:20px}
+    .forgot-card input{
+      width:100%;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(0,198,255,0.15);border-radius:10px;
+      color:#e0e6f0;padding:12px 16px;font-size:14px;
+      font-family:inherit;outline:none;margin-bottom:14px;
+    }
+    .forgot-card input:focus{border-color:rgba(0,198,255,0.45)}
+    .forgot-card input::placeholder{color:rgba(180,200,230,0.3)}
+    .forgot-btns{display:flex;gap:10px}
+    .forgot-btns button{
+      flex:1;padding:11px;border:none;border-radius:10px;
+      font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.3s;
+    }
+    .forgot-btns .f-send{background:linear-gradient(135deg,#0072ff,#00c6ff);color:#fff}
+    .forgot-btns .f-cancel{background:rgba(255,255,255,0.06);color:#e0e6f0;border:1px solid rgba(255,255,255,0.1)}
+    .forgot-btns .f-send:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,114,255,0.3)}
+  </style>
 </head>
 <body>
 
-<section class="builder">
-  <div class="builder-card">
+<canvas id="bg"></canvas>
+<div class="corner-deco tl"></div>
+<div class="corner-deco br"></div>
+<div id="toast"></div>
 
-    <h1>My Profile</h1>
-
-    <p><strong>Name:</strong> <span id="profileName"></span></p>
-
-    <p><strong>Email:</strong> <span id="profileEmail"></span></p>
-
-    <br>
-
-    <h2>Change Password</h2>
-    
-    <input id="currentPassword" type="password" placeholder="Current Password">
-    
-    <input id="newPassword" type="password" placeholder="New Password">
-    
-    <button id="changePasswordBtn" class="btn">
-      Update Password
-    </button>
-
-    <br>
-
-   <div class="profile-actions">
-  <a href="dashboard.html" class="btn">
-    Back To Dashboard
-  </a>
+<!-- Forgot Password Modal -->
+<div id="forgotModal">
+  <div class="forgot-card">
+    <div style="font-size:36px;margin-bottom:12px">🔑</div>
+    <h3>Forgot Password?</h3>
+    <p>Enter your email and we'll send a reset link</p>
+    <input type="email" id="forgotEmail" placeholder="your@email.com">
+    <div class="forgot-btns">
+      <button class="f-send" onclick="sendForgotPassword()">Send Reset Link</button>
+      <button class="f-cancel" onclick="closeForgot()">Cancel</button>
+    </div>
+  </div>
 </div>
-</section>
+
+<div class="profile-page">
+  <div class="profile-card">
+
+    <!-- HERO -->
+    <div class="profile-hero">
+<div class="avatar-area">
+  <label for="avatarUpload" class="avatar-ring" title="Click to change photo">
+    <div class="avatar-inner" id="avatarEl">?</div>
+    <div class="avatar-overlay">📷</div>
+  </label>
+</div>
+
+    <div class="hero-name" id="profileName">
+        Loading...
+    </div>
+
+    <div class="hero-email" id="profileEmail">
+        loading@email.com
+    </div>
+
+</div>
+    
+
+    <!-- MENU -->
+    <div class="profile-menu">
+
+      <!-- Password Settings toggle -->
+      <div class="menu-item" onclick="togglePwdPanel()">
+        <div class="menu-icon cyan">🔐</div>
+        <div class="menu-text">
+          <div class="menu-label">Password Settings</div>
+          <div class="menu-sub">Update or reset your password</div>
+        </div>
+        <div class="menu-arrow" id="pwdArrow">›</div>
+      </div>
+
+      <!-- Password Panel -->
+      <div class="pwd-panel" id="pwdPanel">
+        <div class="pwd-input-wrap">
+          <span class="pwd-input-icon">🔒</span>
+          <input class="pwd-input" id="currentPassword" type="password" placeholder="Current Password">
+        </div>
+        <div class="pwd-input-wrap">
+          <span class="pwd-input-icon">✨</span>
+          <input class="pwd-input" id="newPassword" type="password" placeholder="New Password">
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-label" id="strengthLabel"></div>
+        <div class="pwd-actions">
+          <button class="pwd-btn primary" id="changePasswordBtn">🔑 Update Password</button>
+          <button class="pwd-btn secondary" onclick="closePwdPanel()">Cancel</button>
+        </div>
+        <a class="forgot-link" onclick="openForgot()">Forgot your password?</a>
+      </div>
+
+      <!-- Logout -->
+      <div class="menu-item" onclick="handleLogout()">
+        <div class="menu-icon red">🚪</div>
+        <div class="menu-text">
+          <div class="menu-label">Logout</div>
+          <div class="menu-sub">Sign out of your account</div>
+        </div>
+        <div class="menu-arrow">›</div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="menu-item" onclick="window.location.href='dashboard.html'">
+        <div class="menu-icon blue">🏠</div>
+        <div class="menu-text">
+          <div class="menu-label">Dashboard</div>
+          <div class="menu-sub">View your portfolios</div>
+        </div>
+        <div class="menu-arrow">›</div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <script src="script.js"></script>
+<script>
+// ── LOAD PROFILE ─────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const name  = localStorage.getItem('userName')  || 'User';
+  const email = localStorage.getItem('userEmail') || '';
+  document.getElementById('profileName').textContent  = name;
+  document.getElementById('profileEmail').textContent = email;
+  loadAvatar();
+});
 
+function loadAvatar(){
+  const avatarEl = document.getElementById('avatarEl');
+  const name = localStorage.getItem('userName') || 'User';
+  const img = localStorage.getItem('profileAvatar');
+  if(img){
+    avatarEl.innerHTML = `<img src="${img}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    avatarEl.textContent = name.charAt(0).toUpperCase();
+  }
+}
+
+// ── AVATAR UPLOAD ─────────────────────────────────────────
+document.getElementById('avatarUpload').addEventListener('change', function(){
+  if(!this.files[0]) return;
+  if(this.files[0].size > 3 * 1024 * 1024){
+    showToast('Image must be under 3MB', 'error');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onloadend = function(){
+    // Compress to 200x200
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      canvas.width = 200; canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      // Draw circle crop
+      ctx.beginPath();
+      ctx.arc(100,100,100,0,Math.PI*2);
+      ctx.clip();
+      // Scale image to fit
+      const size = Math.min(img.width, img.height);
+      const sx = (img.width - size)/2;
+      const sy = (img.height - size)/2;
+      ctx.drawImage(img, sx, sy, size, size, 0, 0, 200, 200);
+      const compressed = canvas.toDataURL('image/jpeg', 0.8);
+      localStorage.setItem('profileAvatar', compressed);
+      loadAvatar();
+      showToast('Profile photo updated! ✅', 'success');
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(this.files[0]);
+});
+
+// ── PASSWORD PANEL ────────────────────────────────────────
+function togglePwdPanel(){
+  const panel = document.getElementById('pwdPanel');
+  const arrow = document.getElementById('pwdArrow');
+  panel.classList.toggle('open');
+  arrow.style.transform = panel.classList.contains('open') ? 'rotate(90deg)' : '';
+  arrow.style.color = panel.classList.contains('open') ? '#00c6ff' : '';
+}
+function closePwdPanel(){
+  document.getElementById('pwdPanel').classList.remove('open');
+  document.getElementById('pwdArrow').style.transform='';
+  document.getElementById('pwdArrow').style.color='';
+}
+
+// ── PASSWORD STRENGTH ─────────────────────────────────────
+document.getElementById('newPassword').addEventListener('input', function(){
+  const v=this.value, fill=document.getElementById('strengthFill'), label=document.getElementById('strengthLabel');
+  let s=0;
+  if(v.length>=6)s++; if(v.length>=10)s++; if(/[A-Z]/.test(v))s++; if(/[0-9]/.test(v))s++; if(/[^A-Za-z0-9]/.test(v))s++;
+  const lvls=[{w:'0%',c:'transparent',t:''},{w:'25%',c:'#ef4444',t:'Weak'},{w:'50%',c:'#f97316',t:'Fair'},{w:'75%',c:'#eab308',t:'Good'},{w:'100%',c:'#22c55e',t:'Strong'}];
+  const l=lvls[Math.min(s,4)];
+  fill.style.width=l.w; fill.style.background=l.c;
+  label.textContent=l.t; label.style.color=l.c;
+});
+
+// ── FORGOT PASSWORD MODAL ─────────────────────────────────
+function openForgot(){
+  const email=localStorage.getItem('userEmail')||'';
+  document.getElementById('forgotEmail').value=email;
+  document.getElementById('forgotModal').classList.add('open');
+}
+function closeForgot(){ document.getElementById('forgotModal').classList.remove('open'); }
+async function sendForgotPassword(){
+  const email=document.getElementById('forgotEmail').value;
+  if(!email){ showToast('Please enter your email','error'); return; }
+  showToast('Reset link sent to '+email,'success');
+  closeForgot();
+}
+
+// ── LOGOUT ────────────────────────────────────────────────
+function handleLogout(){
+  if(!confirm('Are you sure you want to logout?')) return;
+  localStorage.removeItem('token');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userRole');
+  showToast('Logged out successfully','success');
+  setTimeout(()=>window.location.href='login.html', 1200);
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg, type='success'){
+  const t=document.getElementById('toast');
+  const isSuccess = type==='success';
+  t.style.cssText=`
+    display:flex;
+    background:${isSuccess?'rgba(0,198,100,0.12)':'rgba(239,68,68,0.12)'};
+    border:1px solid ${isSuccess?'rgba(0,198,100,0.3)':'rgba(239,68,68,0.3)'};
+    color:${isSuccess?'rgba(0,230,120,0.9)':'rgba(239,68,68,0.9)'};
+    animation:toastIn 0.4s ease both;
+  `;
+  t.innerHTML = (isSuccess?'✅ ':'❌ ') + msg;
+  setTimeout(()=>{ t.style.display='none'; }, 3000);
+}
+
+// Override alert for password update from script.js
+const _orig = window.alert;
+window.alert = function(msg){
+  if(typeof msg==='string' && (msg.includes('updated') || msg.includes('✅'))) showToast(msg,'success');
+  else if(typeof msg==='string' && msg.includes('failed')) showToast(msg,'error');
+  else if(typeof msg==='string' && msg.includes('Logged out')) { /* handled by handleLogout */ }
+  else _orig(msg);
+};
+
+// ── STARFIELD BACKGROUND ──────────────────────────────────
+(function(){
+  const canvas=document.getElementById('bg'); if(!canvas)return;
+  const ctx=canvas.getContext('2d'); let W,H,mouse={x:0,y:0};
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+  const stars=Array.from({length:200},()=>({x:Math.random()*3000,y:Math.random()*3000,r:Math.random()*1.5+0.2,a:Math.random(),speed:Math.random()*0.004+0.001,twinkle:Math.random()*Math.PI*2}));
+  const orbs=Array.from({length:5},(_,i)=>({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5)*0.0003,vy:(Math.random()-0.5)*0.0003,r:150+Math.random()*180,hue:[200,220,260,280,190][i],a:0.05+Math.random()*0.07,phase:Math.random()*Math.PI*2}));
+  const nodes=Array.from({length:30},()=>({x:Math.random()*2000,y:Math.random()*2000,vx:(Math.random()-0.5)*0.4,vy:(Math.random()-0.5)*0.4,r:Math.random()*2+0.5,hue:Math.random()>0.5?200:265,a:Math.random()*0.5+0.2,pulse:Math.random()*Math.PI*2,ps:0.03+Math.random()*0.02}));
+  const shoots=[];
+  setInterval(()=>shoots.push({x:Math.random()*W,y:Math.random()*H*0.4,vx:5+Math.random()*5,vy:2+Math.random()*3,len:100+Math.random()*100,life:1}),2800);
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const bg=ctx.createRadialGradient(W*.5,H*.5,0,W*.5,H*.5,Math.max(W,H));
+    bg.addColorStop(0,'#060b1f');bg.addColorStop(0.5,'#040810');bg.addColorStop(1,'#020408');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);t+=0.012;
+    orbs.forEach(o=>{o.x+=o.vx;o.y+=o.vy;o.phase+=0.008;if(o.x<0||o.x>1)o.vx*=-1;if(o.y<0||o.y>1)o.vy*=-1;const ox=o.x*W,oy=o.y*H,p=o.a*(0.7+0.3*Math.sin(o.phase));const g=ctx.createRadialGradient(ox,oy,0,ox,oy,o.r);g.addColorStop(0,`hsla(${o.hue},100%,70%,${p})`);g.addColorStop(1,'transparent');ctx.beginPath();ctx.arc(ox,oy,o.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();});
+    stars.forEach(s=>{s.twinkle+=s.speed;const alpha=s.a*(0.4+0.6*Math.sin(s.twinkle));ctx.beginPath();ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,225,255,${alpha})`;ctx.fill();});
+    for(let i=shoots.length-1;i>=0;i--){const s=shoots[i];s.x+=s.vx;s.y+=s.vy;s.life-=0.025;if(s.life<=0||s.x>W||s.y>H){shoots.splice(i,1);continue;}const g=ctx.createLinearGradient(s.x,s.y,s.x-s.len,s.y-s.len*0.5);g.addColorStop(0,`rgba(200,240,255,${s.life*0.9})`);g.addColorStop(1,'transparent');ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.len,s.y-s.len*0.5);ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.stroke();}
+    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;n.pulse+=n.ps;if(n.x<0)n.x=W;if(n.x>W)n.x=0;if(n.y<0)n.y=H;if(n.y>H)n.y=0;const nr=n.r*(0.8+0.4*Math.sin(n.pulse));const ng=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,nr*4);ng.addColorStop(0,`hsla(${n.hue},100%,70%,${n.a})`);ng.addColorStop(1,'transparent');ctx.beginPath();ctx.arc(n.x,n.y,nr*4,0,Math.PI*2);ctx.fillStyle=ng;ctx.fill();});
+    for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<150){ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle=`rgba(0,198,255,${0.15*(1-d/150)})`;ctx.lineWidth=0.7;ctx.stroke();}}
+    if(mouse.x||mouse.y){const mg=ctx.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,180);mg.addColorStop(0,'rgba(0,198,255,0.05)');mg.addColorStop(1,'transparent');ctx.beginPath();ctx.arc(mouse.x,mouse.y,180,0,Math.PI*2);ctx.fillStyle=mg;ctx.fill();}
+    const sy=H*((t*0.018)%1);const sg=ctx.createLinearGradient(0,sy-80,0,sy+80);sg.addColorStop(0,'transparent');sg.addColorStop(0.5,'rgba(0,198,255,0.03)');sg.addColorStop(1,'transparent');ctx.fillStyle=sg;ctx.fillRect(0,sy-80,W,160);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
 </body>
 </html>

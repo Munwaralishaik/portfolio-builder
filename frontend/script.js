@@ -8,84 +8,80 @@ const projectsContainer = document.getElementById("projectsContainer");
 const addCertBtn = document.getElementById("addCertBtn");
 const certificationsContainer = document.getElementById("certificationsContainer");
 
-const addExperienceBtn = document.getElementById("addExperienceBtn");
+const addExperienceBtn = document.getElementById("addExperienceBtn") || document.getElementById("addExpBtn");
 const experienceContainer = document.getElementById("experienceContainer");
 
 const params = new URLSearchParams(window.location.search);
 let currentSlug = params.get("id");
 
 if (!currentSlug && window.location.pathname.startsWith("/p/")) {
-  currentSlug = window.location.pathname.split("/p/")[1];
+  currentSlug = window.location.pathname.replace("/p/", "");
 }
 
 /* ADD PROJECT */
 if (addProjectBtn && projectsContainer) {
-  addProjectBtn.addEventListener("click", function () { addProjectInput(); });
+  addProjectBtn.addEventListener("click", function () {
+    addProjectInput();
+  });
 }
 
 function addProjectInput(project = {}) {
   const div = document.createElement("div");
   div.className = "project-input";
   div.innerHTML = `
-    <input type="text" class="projectTitle" placeholder="Project Title" value="${project.title || ""}">
-    <textarea class="projectDescription" placeholder="Project Description" rows="4">${project.description || ""}</textarea>
-    <input type="text" class="projectTech" placeholder="Technologies, comma separated" value="${project.tech ? project.tech.join(",") : ""}">
-    <input type="text" class="projectLink" placeholder="Project / GitHub Link" value="${project.link || ""}">
+    <div class="form-group"><label>Project Title</label><input type="text" class="projectTitle" placeholder="Portfolio Builder App" value="${project.title || ""}"></div>
+    <div class="form-group"><label>Description</label><textarea class="projectDescription" placeholder="A full-stack web app..." rows="3">${project.description || ""}</textarea></div>
+    <div class="form-row">
+      <div style="flex:1"><div class="form-group"><label>Technologies</label><input type="text" class="projectTech" placeholder="React, Firebase..." value="${project.tech ? project.tech.join(",") : ""}"></div></div>
+      <div style="flex:1"><div class="form-group"><label>Project Link</label><input type="text" class="projectLink" placeholder="github.com/..." value="${project.link || ""}"></div></div>
+    </div>
   `;
   projectsContainer.appendChild(div);
 }
 
 /* ADD CERTIFICATE */
 if (addCertBtn && certificationsContainer) {
-  addCertBtn.addEventListener("click", function () { addCertInput(); });
+  addCertBtn.addEventListener("click", function () {
+    addCertInput();
+  });
 }
 
 function addCertInput(cert = {}) {
   const div = document.createElement("div");
   div.className = "cert-input";
   div.innerHTML = `
-    <input type="text" class="certTitle" placeholder="Certificate Title" value="${cert.title || ""}">
-    <input type="text" class="certProvider" placeholder="Provider / Organization" value="${cert.provider || ""}">
-    <input type="text" class="certYear" placeholder="Year" value="${cert.year || ""}">
+    <div class="form-row">
+      <div style="flex:2"><div class="form-group"><label>Certificate Title</label><input type="text" class="certTitle" placeholder="AWS Solutions Architect" value="${cert.title || ""}"></div></div>
+      <div style="flex:1"><div class="form-group"><label>Provider</label><input type="text" class="certProvider" placeholder="Amazon" value="${cert.provider || ""}"></div></div>
+      <div style="flex:0 0 80px"><div class="form-group"><label>Year</label><input type="text" class="certYear" placeholder="2024" value="${cert.year || ""}"></div></div>
+    </div>
     <div class="form-group" style="margin-bottom:0">
-      <label style="font-size:12px;color:rgba(0,198,255,0.8);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:block">Upload Certificate (Image/PDF)</label>
-      <div class="file-zone" style="padding:12px;margin-bottom:0">
-        <input type="file" class="certFile" accept="image/*,.pdf">
-        <p class="certFileText">📜 Drop certificate image or PDF or <span>browse</span></p>
+      <label>Upload Certificate (Image / PDF)</label>
+      <div class="file-zone" style="padding:12px;margin-bottom:0;position:relative">
+        <input type="file" class="certFile" accept="image/*,.pdf" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
+        <p class="certFileText">📜 Drop certificate or <span>browse</span></p>
       </div>
     </div>
   `;
-
-  /* File feedback */
-  const fileInput = div.querySelector(".certFile");
-  fileInput.addEventListener("change", function () {
-    if (this.files[0]) {
-      div.querySelector(".certFileText").innerHTML = `✅ <span>${this.files[0].name}</span>`;
-    }
-  });
-
-  /* If editing and cert already has a fileUrl, show it */
-  if (cert.fileUrl) {
-    const label = div.querySelector(".certFileText");
-    if (label) label.innerHTML = `✅ <span>Certificate uploaded</span>`;
-    fileInput.dataset.existingUrl = cert.fileUrl;
-  }
-
   certificationsContainer.appendChild(div);
 }
 
 /* ADD EXPERIENCE */
 if (addExperienceBtn && experienceContainer) {
-  addExperienceBtn.addEventListener("click", function () { addExperienceInput(); });
+  addExperienceBtn.addEventListener("click", function () {
+    addExperienceInput();
+  });
 }
 
 function addExperienceInput(exp = {}) {
   const div = document.createElement("div");
   div.className = "experience-input";
   div.innerHTML = `
-    <input type="text" class="expTitle" placeholder="Experience Title" value="${exp.title || ""}">
-    <input type="text" class="expYear" placeholder="Year / Duration" value="${exp.year || ""}">
-    <textarea class="expDescription" placeholder="Description" rows="4">${exp.description || ""}</textarea>
+    <div class="form-row">
+      <div style="flex:1"><div class="form-group"><label>Title / Company</label><input type="text" class="expTitle" placeholder="Frontend Developer @ Acme" value="${exp.title || ""}"></div></div>
+      <div style="flex:0 0 140px"><div class="form-group"><label>Year / Duration</label><input type="text" class="expYear" placeholder="2022 – 2024" value="${exp.year || ""}"></div></div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea class="expDescription" placeholder="Led development of..." rows="3">${exp.description || ""}</textarea></div>
   `;
   experienceContainer.appendChild(div);
 }
@@ -95,41 +91,52 @@ if (form) {
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const getValue = (id) => { const el = document.getElementById(id); return el ? el.value : ""; };
+    const getValue = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.value : "";
+    };
 
-    const projects = Array.from(document.querySelectorAll(".project-input")).map(block => ({
-      title: block.querySelector(".projectTitle").value,
-      description: block.querySelector(".projectDescription").value,
-      tech: block.querySelector(".projectTech").value.split(","),
-      link: block.querySelector(".projectLink").value
+    const readFileAsBase64 = (file) => new Promise((resolve) => {
+      if (!file) return resolve("");
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(file);
+    });
+
+    const projectBlocks = document.querySelectorAll(".project-input");
+    const projects = Array.from(projectBlocks)
+      .filter(block => block.querySelector(".projectTitle"))
+      .map(block => ({
+        title: block.querySelector(".projectTitle").value,
+        description: block.querySelector(".projectDescription").value,
+        tech: block.querySelector(".projectTech").value.split(","),
+        link: block.querySelector(".projectLink").value
+      }));
+
+    // Read cert files as base64 async
+    const certBlocks = Array.from(document.querySelectorAll(".cert-input"))
+      .filter(block => block.querySelector(".certTitle"));
+    const certifications = await Promise.all(certBlocks.map(async block => {
+      const fileInput = block.querySelector(".certFile");
+      const fileData = fileInput && fileInput.files[0]
+        ? await readFileAsBase64(fileInput.files[0]) : "";
+      return {
+        title: block.querySelector(".certTitle").value,
+        provider: block.querySelector(".certProvider") ? block.querySelector(".certProvider").value : "",
+        year: block.querySelector(".certYear") ? block.querySelector(".certYear").value : "",
+        fileData
+      };
     }));
 
-    const experiences = Array.from(document.querySelectorAll(".experience-input")).map(block => ({
-      title: block.querySelector(".expTitle").value,
-      year: block.querySelector(".expYear").value,
-      description: block.querySelector(".expDescription").value
-    }));
-
-    /* Read cert files as base64 first */
-    await Promise.all(
-      Array.from(document.querySelectorAll(".certFile")).map(input => {
-        return new Promise(resolve => {
-          if (!input.files[0]) { resolve(); return; }
-          const reader = new FileReader();
-          reader.onloadend = () => { input.dataset.base64 = reader.result; resolve(); };
-          reader.onerror = () => resolve();
-          reader.readAsDataURL(input.files[0]);
-        });
-      })
-    );
-
-    const certifications = Array.from(document.querySelectorAll(".cert-input")).map(block => ({
-      title: block.querySelector(".certTitle").value,
-      provider: block.querySelector(".certProvider").value,
-      year: block.querySelector(".certYear").value,
-      fileUrl: block.querySelector(".certFile").dataset.base64 ||
-               block.querySelector(".certFile").dataset.existingUrl || ""
-    }));
+    const expBlocks = document.querySelectorAll(".experience-input");
+    const experiences = Array.from(expBlocks)
+      .filter(block => block.querySelector(".expTitle"))
+      .map(block => ({
+        title: block.querySelector(".expTitle").value,
+        year: block.querySelector(".expYear") ? block.querySelector(".expYear").value : "",
+        description: block.querySelector(".expDescription").value
+      }));
 
     const data = {
       name: getValue("name"),
@@ -150,6 +157,7 @@ if (form) {
 
     const fileInput = document.getElementById("profileImage");
     const file = fileInput ? fileInput.files[0] : null;
+
     const resumeInput = document.getElementById("resumeFile");
     const resumeFile = resumeInput ? resumeInput.files[0] : null;
 
@@ -160,22 +168,45 @@ if (form) {
 
     function readResumeAndSave() {
       if (resumeFile) {
-        if (resumeFile.type !== "application/pdf") { alert("Resume must be a PDF file"); return; }
-        if (resumeFile.size > 2 * 1024 * 1024) { alert("Resume size must be below 2MB"); return; }
+        if (resumeFile.type !== "application/pdf") {
+          alert("Resume must be a PDF file");
+          return;
+        }
+        if (resumeFile.size > 2 * 1024 * 1024) {
+          alert("Resume size must be below 2MB");
+          return;
+        }
         const resumeReader = new FileReader();
-        resumeReader.onloadend = function () { data.resume = resumeReader.result; saveAndRedirect(); };
-        resumeReader.onerror = function () { alert("Error reading resume"); };
+        resumeReader.onloadend = function () {
+          data.resume = resumeReader.result;
+          saveAndRedirect();
+        };
+        resumeReader.onerror = function () {
+          alert("Error reading resume");
+        };
         resumeReader.readAsDataURL(resumeFile);
-      } else { saveAndRedirect(); }
+      } else {
+        saveAndRedirect();
+      }
     }
 
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { alert("Image size must be below 2MB"); return; }
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Image size must be below 2MB");
+        return;
+      }
       const reader = new FileReader();
-      reader.onloadend = function () { data.image = reader.result; readResumeAndSave(); };
-      reader.onerror = function () { alert("Error reading image"); };
+      reader.onloadend = function () {
+        data.image = reader.result;
+        readResumeAndSave();
+      };
+      reader.onerror = function () {
+        alert("Error reading image");
+      };
       reader.readAsDataURL(file);
-    } else { readResumeAndSave(); }
+    } else {
+      readResumeAndSave();
+    }
   });
 }
 
@@ -184,6 +215,7 @@ let data = null;
 
 async function loadPortfolio() {
   const page = window.location.pathname;
+
   try {
     if (currentSlug && page.includes("builder.html")) {
       const response = await fetch(API_URL + "/" + currentSlug);
@@ -195,44 +227,61 @@ async function loadPortfolio() {
     if (currentSlug) {
       const response = await fetch(API_URL + "/" + currentSlug);
       data = await response.json();
+
       if (window.location.pathname.startsWith("/p/")) {
-        const viewResponse = await fetch(API_URL + "/" + currentSlug + "/view", { method: "PUT" });
+        const viewResponse = await fetch(API_URL + "/" + currentSlug + "/view", {
+          method: "PUT"
+        });
         data = await viewResponse.json();
       }
+
       data.skills = data.skills ? data.skills.split(",") : [];
       data.projects = data.projects ? JSON.parse(data.projects) : [];
       data.certifications = data.certifications ? JSON.parse(data.certifications) : [];
       data.experiences = data.experiences ? JSON.parse(data.experiences) : [];
+
       renderPortfolio();
-      updateOwnerButtons();
+      updateOwnerButtons(); // ← called AFTER data is loaded
       return;
     }
 
     if (page.includes("preview.html")) {
       data = JSON.parse(localStorage.getItem("portfolioData"));
+
       if (!data) {
         alert("No preview data found. Please create portfolio again.");
         window.location.href = "builder.html";
         return;
       }
+
       data.skills = Array.isArray(data.skills) ? data.skills : [];
       data.projects = Array.isArray(data.projects) ? data.projects : [];
       data.certifications = Array.isArray(data.certifications) ? data.certifications : [];
       data.experiences = Array.isArray(data.experiences) ? data.experiences : [];
+
       renderPortfolio();
-      updateOwnerButtons();
+      updateOwnerButtons(); // ← called AFTER data is loaded
     }
-  } catch (error) { console.error(error); }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 loadPortfolio();
 
-/* OWNER BUTTONS */
+/* OWNER BUTTONS — called after data loads */
 function updateOwnerButtons() {
   const ownerButtons = document.querySelectorAll(".owner-only");
   const loggedInEmail = localStorage.getItem("userEmail");
+
   if (loggedInEmail && data && loggedInEmail === data.email) {
-    ownerButtons.forEach(btn => btn.style.setProperty("display", "inline-flex", "important"));
+    ownerButtons.forEach(btn => {
+      btn.style.display = "inline-flex";
+    });
+  } else {
+    ownerButtons.forEach(btn => {
+      btn.style.display = "none";
+    });
   }
 }
 
@@ -240,8 +289,10 @@ function updateOwnerButtons() {
 function fillBuilderForm(data) {
   document.getElementById("name").value = data.name || "";
   document.getElementById("role").value = data.role || "";
+
   const templateInput = document.getElementById("template");
   if (templateInput) templateInput.value = data.template || "developer";
+
   document.getElementById("about").value = data.about || "";
   document.getElementById("skills").value = data.skills || "";
   document.getElementById("github").value = data.github || "";
@@ -253,10 +304,12 @@ function fillBuilderForm(data) {
     projectsContainer.innerHTML = "";
     JSON.parse(data.projects).forEach(project => addProjectInput(project));
   }
+
   if (data.certifications && certificationsContainer) {
     certificationsContainer.innerHTML = "";
     JSON.parse(data.certifications).forEach(cert => addCertInput(cert));
   }
+
   if (data.experiences && experienceContainer) {
     experienceContainer.innerHTML = "";
     JSON.parse(data.experiences).forEach(exp => addExperienceInput(exp));
@@ -268,16 +321,25 @@ function renderPortfolio() {
   if (!data) return;
 
   const previewCard = document.querySelector(".preview-card");
+
   if (previewCard) {
     previewCard.classList.remove("developer-template", "data-template", "minimal-template");
     previewCard.classList.add((data.template || "developer") + "-template");
   }
 
-  const setText = (id, value) => { const el = document.getElementById(id); if (el) el.innerText = value || ""; };
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value || "";
+  };
+
   const setHref = (id, value) => {
     const el = document.getElementById(id);
-    if (el && value) { el.href = value; el.style.display = "inline"; }
-    else if (el) { el.style.display = "none"; }
+    if (el && value) {
+      el.href = value;
+      el.style.display = "inline";
+    } else if (el) {
+      el.style.display = "none";
+    }
   };
 
   const previewImage = document.getElementById("previewImage");
@@ -298,11 +360,14 @@ function renderPortfolio() {
   const resumeLink = document.getElementById("previewResume");
   if (resumeLink) {
     if (data.resume) {
-      resumeLink.href = data.resume; resumeLink.download = "resume.pdf";
-      resumeLink.innerText = "Download Resume"; resumeLink.style.display = "inline";
+      resumeLink.href = data.resume;
+      resumeLink.download = "resume.pdf";
+      resumeLink.innerText = "Download Resume";
+      resumeLink.style.display = "inline";
     } else {
       resumeLink.innerText = "No Resume Uploaded";
-      resumeLink.removeAttribute("href"); resumeLink.style.display = "inline";
+      resumeLink.removeAttribute("href");
+      resumeLink.style.display = "inline";
     }
   }
 
@@ -338,7 +403,6 @@ function renderPortfolio() {
     });
   }
 
-  /* CERTIFICATIONS — with View Certificate button */
   const previewCertifications = document.getElementById("previewCertifications");
   if (previewCertifications && data.certifications) {
     previewCertifications.innerHTML = "";
@@ -346,20 +410,14 @@ function renderPortfolio() {
       if (!cert.title.trim()) return;
       const card = document.createElement("div");
       card.className = "cert-card";
+      const viewBtn = cert.fileData
+        ? `<a href="${cert.fileData}" target="_blank" class="cert-view-btn">📜 View Certificate</a>`
+        : "";
       card.innerHTML = `
         <h3>${cert.title}</h3>
-        <p>${cert.provider}</p>
-        <p>${cert.year}</p>
-        ${cert.fileUrl ? `
-          <a href="${cert.fileUrl}" target="_blank"
-             style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;
-                    padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;
-                    background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);
-                    color:#a78bfa;text-decoration:none;transition:all 0.2s"
-             onmouseover="this.style.background='rgba(167,139,250,0.22)'"
-             onmouseout="this.style.background='rgba(167,139,250,0.12)'">
-            📜 View Certificate
-          </a>` : ""}
+        <p>${cert.provider || ""}</p>
+        <p>${cert.year || ""}</p>
+        ${viewBtn}
       `;
       previewCertifications.appendChild(card);
     });
@@ -380,35 +438,74 @@ function renderPortfolio() {
 
 /* PUBLISH PORTFOLIO */
 const publishBtn = document.getElementById("publishBtn");
+
 if (publishBtn) {
   publishBtn.addEventListener("click", async function () {
     const data = JSON.parse(localStorage.getItem("portfolioData"));
-    if (!data || !data.name) { alert("No portfolio data found"); return; }
+
+    if (!data || !data.name) {
+      alert("No portfolio data found");
+      return;
+    }
+
     const slug = data.name.toLowerCase().trim().replaceAll(" ", "-");
+    const userEmail = localStorage.getItem("userEmail");
+
     const payload = {
-      name: data.name, role: data.role, template: data.template || "developer",
-      about: data.about, skills: data.skills.join(","),
-      github: data.github, linkedin: data.linkedin, email: data.email, phone: data.phone,
-      image: data.image, resume: data.resume, slug: slug,
-      projects: JSON.stringify(data.projects),
-      certifications: JSON.stringify(data.certifications),
-      experiences: JSON.stringify(data.experiences),
-      userEmail: localStorage.getItem("userEmail")
+      name: data.name,
+      role: data.role,
+      template: data.template || "developer",
+      about: data.about,
+      skills: Array.isArray(data.skills) ? data.skills.join(",") : data.skills,
+      github: data.github,
+      linkedin: data.linkedin,
+      email: data.email,
+      phone: data.phone,
+      image: data.image || "",
+      resume: data.resume || "",
+      slug: slug,
+      projects: JSON.stringify(Array.isArray(data.projects) ? data.projects : []),
+      certifications: JSON.stringify(Array.isArray(data.certifications) ? data.certifications : []),
+      experiences: JSON.stringify(Array.isArray(data.experiences) ? data.experiences : []),
+      userEmail: userEmail
     };
+
     try {
-      const response = await fetch(API_URL, {
-        method: "POST", headers: { "Content-Type": "application/json" },
+      // Try to update first (PUT), if not found create (POST)
+      let response = await fetch(API_URL + "/" + slug, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      if (!response.ok) throw new Error("Failed to publish portfolio");
-      const savedPortfolio = await response.json();
-      alert("Portfolio Published Successfully 🚀");
-      if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") {
-        window.location.href = "public.html?id=" + savedPortfolio.slug;
-      } else {
-        window.location.href = "/p/" + savedPortfolio.slug;
+
+      // If PUT fails or not found, create new with POST
+      if (!response.ok) {
+        response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
       }
-    } catch (error) { console.error(error); alert("Error publishing portfolio"); }
+
+      if (!response.ok) throw new Error("Failed to publish portfolio");
+
+      const savedPortfolio = await response.json();
+
+      // Save slug to localStorage for future edits
+      localStorage.setItem("publishedSlug", savedPortfolio.slug || slug);
+
+      alert("Portfolio Published Successfully 🚀");
+
+      if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") {
+        window.location.href = "public.html?id=" + (savedPortfolio.slug || slug);
+      } else {
+        window.location.href = "/p/" + (savedPortfolio.slug || slug);
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Error publishing portfolio");
+    }
   });
 }
 
@@ -428,7 +525,7 @@ if (copyLinkBtn) {
     const portfolioLink = window.location.origin + "/p/" + currentSlug;
     navigator.clipboard.writeText(portfolioLink);
     copyLinkBtn.innerText = "Link Copied ✅";
-    setTimeout(function () { copyLinkBtn.innerText = "🔗 Copy Portfolio Link"; }, 2000);
+    setTimeout(function () { copyLinkBtn.innerText = "Copy Portfolio Link"; }, 2000);
   });
 }
 
@@ -443,7 +540,10 @@ if (deleteBtn) {
       if (!response.ok) throw new Error("Delete failed");
       alert("Portfolio Deleted Successfully");
       window.location.href = "/dashboard.html";
-    } catch (error) { console.error(error); alert("Error deleting portfolio"); }
+    } catch (error) {
+      console.error(error);
+      alert("Error deleting portfolio");
+    }
   });
 }
 
@@ -455,35 +555,53 @@ function startThreeBackground(template = "developer") {
   const canvas = document.getElementById("bg");
   if (!canvas || typeof THREE === "undefined") return;
   if (threeAnimationId) cancelAnimationFrame(threeAnimationId);
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   camera.position.z = 30;
+
   let object;
   if (template === "data") {
     const group = new THREE.Group();
     for (let i = 0; i < 18; i++) {
       const height = Math.random() * 12 + 4;
-      const bar = new THREE.Mesh(new THREE.BoxGeometry(1.2, height, 1.2), new THREE.MeshStandardMaterial({ color: 0x22c55e, wireframe: true }));
-      bar.position.x = (i - 9) * 2; bar.position.y = -5; group.add(bar);
+      const bar = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, height, 1.2),
+        new THREE.MeshStandardMaterial({ color: 0x22c55e, wireframe: true })
+      );
+      bar.position.x = (i - 9) * 2;
+      bar.position.y = -5;
+      group.add(bar);
     }
     object = group;
   } else if (template === "minimal") {
-    object = new THREE.Mesh(new THREE.SphereGeometry(9, 32, 32), new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, opacity: 0.25, transparent: true }));
+    object = new THREE.Mesh(
+      new THREE.SphereGeometry(9, 32, 32),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, opacity: 0.25, transparent: true })
+    );
   } else {
-    object = new THREE.Mesh(new THREE.TorusKnotGeometry(10, 3, 100, 16), new THREE.MeshStandardMaterial({ color: 0x38bdf8, wireframe: true }));
+    object = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(10, 3, 100, 16),
+      new THREE.MeshStandardMaterial({ color: 0x38bdf8, wireframe: true })
+    );
   }
+
   scene.add(object);
-  const light = new THREE.PointLight(0xffffff); light.position.set(20, 20, 20);
+  const light = new THREE.PointLight(0xffffff);
+  light.position.set(20, 20, 20);
   scene.add(light, new THREE.AmbientLight(0xffffff, 0.5));
+
   function animate() {
     threeAnimationId = requestAnimationFrame(animate);
-    object.rotation.x += 0.002; object.rotation.y += 0.003;
+    object.rotation.x += 0.002;
+    object.rotation.y += 0.003;
     renderer.render(scene, camera);
   }
   animate();
+
   window.addEventListener("resize", function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -498,15 +616,32 @@ if (signupBtn) {
     const name = document.getElementById("signupName").value;
     const email = document.getElementById("signupEmail").value;
     const password = document.getElementById("signupPassword").value;
+
     signupBtn.disabled = true;
     signupBtn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 18 18" style="animation:spin .7s linear infinite"><circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/><path d="M9 2 A7 7 0 0 1 16 9" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>Creating account...</span>`;
-    if (!document.getElementById("spin-style")) { const s = document.createElement("style"); s.id = "spin-style"; s.textContent = "@keyframes spin{to{transform:rotate(360deg)}}"; document.head.appendChild(s); }
+    if (!document.getElementById("spin-style")) {
+      const s = document.createElement("style");
+      s.id = "spin-style";
+      s.textContent = "@keyframes spin { to { transform: rotate(360deg); } }";
+      document.head.appendChild(s);
+    }
+
     try {
-      const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, password }) });
+      const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      });
       if (!response.ok) throw new Error("Signup failed");
-      alert("Signup Successful ✅"); window.location.href = "login.html";
-    } catch (err) { console.error(err); alert("Signup Failed ❌"); }
-    finally { signupBtn.disabled = false; signupBtn.innerHTML = "Signup"; }
+      alert("Signup Successful ✅");
+      window.location.href = "login.html";
+    } catch (err) {
+      console.error(err);
+      alert("Signup Failed ❌");
+    } finally {
+      signupBtn.disabled = false;
+      signupBtn.innerHTML = "Signup";
+    }
   });
 }
 
@@ -516,37 +651,115 @@ if (loginBtn) {
   loginBtn.addEventListener("click", async () => {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
+
     loginBtn.disabled = true;
     loginBtn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 18 18" style="animation:spin .7s linear infinite"><circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/><path d="M9 2 A7 7 0 0 1 16 9" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>Signing in...</span>`;
-    if (!document.getElementById("spin-style")) { const s = document.createElement("style"); s.id = "spin-style"; s.textContent = "@keyframes spin{to{transform:rotate(360deg)}}"; document.head.appendChild(s); }
+    if (!document.getElementById("spin-style")) {
+      const s = document.createElement("style");
+      s.id = "spin-style";
+      s.textContent = "@keyframes spin { to { transform: rotate(360deg); } }";
+      document.head.appendChild(s);
+    }
+
     try {
-      const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+      const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
       if (!response.ok) throw new Error("Login failed");
       const user = await response.json();
-      localStorage.setItem("token", user.email); localStorage.setItem("userEmail", user.email);
-      localStorage.setItem("userName", user.name); localStorage.setItem("userRole", user.role);
+      localStorage.setItem("token", user.email);
+      localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("userName", user.name);
+      localStorage.setItem("userRole", user.role);
       alert("Login Successful ✅");
-      if (user.role === "ADMIN") { window.location.href = "admin.html"; }
-      else { window.location.href = "dashboard.html"; }
-    } catch (err) { console.error(err); alert("Invalid Credentials ❌"); }
-    finally { loginBtn.disabled = false; loginBtn.innerHTML = "Login"; }
+      if (user.role === "ADMIN") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "dashboard.html";
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Invalid Credentials ❌");
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = "Login";
+    }
   });
 }
 
 /* PROTECT BUILDER PAGE */
 if (window.location.pathname.includes("builder.html")) {
   const token = localStorage.getItem("token");
-  if (!token) { alert("Please login first"); window.location.href = "login.html"; }
+  if (!token) {
+    alert("Please login first");
+    window.location.href = "login.html";
+  }
 }
 
 /* LOGOUT */
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", function () {
-    localStorage.removeItem("token"); localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName"); localStorage.removeItem("userRole");
-    alert("Logged out successfully"); window.location.href = "login.html";
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
+    alert("Logged out successfully");
+    window.location.href = "login.html";
   });
+}
+
+/* DASHBOARD PORTFOLIOS */
+const dashboardContainer = document.getElementById("dashboardPortfolios");
+if (dashboardContainer) loadDashboardPortfolios();
+
+async function loadDashboardPortfolios() {
+  try {
+    const userEmail = localStorage.getItem("userEmail");
+    const response = await fetch(API_URL + "/my/" + userEmail);
+    const portfolios = await response.json();
+    const portfolioCount = document.getElementById("portfolioCount");
+    if (portfolioCount) portfolioCount.innerText = "Total Portfolios: " + portfolios.length;
+
+    dashboardContainer.innerHTML = "";
+    if (!portfolios.length) {
+      dashboardContainer.innerHTML = "<p>No portfolios found.</p>";
+      return;
+    }
+
+    portfolios.reverse().forEach(portfolio => {
+      const card = document.createElement("div");
+      card.className = "dashboard-card";
+      card.innerHTML = `
+        <h3>${portfolio.name}</h3>
+        <p>${portfolio.role || ""}</p>
+        <p>👁️ Views: ${portfolio.views || 0}</p>
+        <a class="btn" href="/p/${portfolio.slug}">View</a>
+        <a class="btn" href="/builder.html?id=${portfolio.slug}">Edit</a>
+        <button class="btn delete-dashboard" data-slug="${portfolio.slug}">Delete</button>
+      `;
+      dashboardContainer.appendChild(card);
+    });
+
+    document.querySelectorAll(".delete-dashboard").forEach(btn => {
+      btn.addEventListener("click", async function () {
+        const slug = this.dataset.slug;
+        if (!confirm("Delete this portfolio?")) return;
+        await fetch(API_URL + "/" + slug, { method: "DELETE" });
+        loadDashboardPortfolios();
+      });
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+/* WELCOME USER */
+const welcomeUser = document.getElementById("welcomeUser");
+if (welcomeUser) {
+  const userName = localStorage.getItem("userName");
+  welcomeUser.innerText = userName ? "Welcome, " + userName + " 👋" : "";
 }
 
 /* PROFILE PAGE */
@@ -565,11 +778,15 @@ if (changePasswordBtn) {
     const currentPassword = document.getElementById("currentPassword").value;
     const newPassword = document.getElementById("newPassword").value;
     const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/change-password", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, currentPassword, newPassword })
     });
-    if (response.ok) { alert("Password updated successfully ✅"); }
-    else { alert("Password update failed ❌"); }
+    if (response.ok) {
+      alert("Password updated successfully ✅");
+    } else {
+      alert("Password update failed ❌");
+    }
   });
 }
 
@@ -591,7 +808,10 @@ if (totalUsers && totalPortfolios && totalViews) {
 /* ADMIN PAGE PROTECTION */
 if (window.location.pathname.includes("admin.html")) {
   const userRole = localStorage.getItem("userRole");
-  if (userRole !== "ADMIN") { alert("Access Denied. Admin only."); window.location.href = "dashboard.html"; }
+  if (userRole !== "ADMIN") {
+    alert("Access Denied. Admin only.");
+    window.location.href = "dashboard.html";
+  }
 }
 
 const adminBtn = document.getElementById("adminBtn");
@@ -604,16 +824,49 @@ if (adminBtn) {
 async function deletePortfolio(slug) {
   if (!confirm("Are you sure you want to delete this portfolio?")) return;
   try {
-    await fetch(`${API_URL}/${slug}`, { method: "DELETE" });
+    await fetch(`${API_URL}/api/portfolios/${slug}`, { method: "DELETE" });
     alert("Portfolio deleted successfully");
-    if (typeof loadDashboardPortfolios === "function") loadDashboardPortfolios();
-  } catch (error) { console.error(error); alert("Failed to delete portfolio"); }
+    loadDashboardPortfolios();
+  } catch (error) {
+    console.error(error);
+    alert("Failed to delete portfolio");
+  }
 }
 
-/* PASSWORD TOGGLE */
-function togglePw(id, btn) {
-  const input = document.getElementById(id);
-  const isHidden = input.type === "password";
-  input.type = isHidden ? "text" : "password";
-  btn.style.color = isHidden ? "#38bdf8" : "#64748b";
-}
+const avatarUpload = document.getElementById("avatarUpload");
+const avatarEl = document.getElementById("avatarEl");
+const avatarHint = document.getElementById("avatarHint");
+const removePhotoBtn = document.getElementById("removePhotoBtn");
+
+const defaultAvatar = avatarEl.innerHTML;
+
+avatarHint.addEventListener("click", () => {
+  avatarUpload.click();
+});
+
+avatarUpload.addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    avatarEl.innerHTML = `
+      <img src="${e.target.result}"
+           style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+    `;
+
+    removePhotoBtn.style.display = "flex";
+  };
+
+  reader.readAsDataURL(file);
+});
+
+removePhotoBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  avatarEl.innerHTML = defaultAvatar;
+  avatarUpload.value = "";
+  removePhotoBtn.style.display = "none";
+});

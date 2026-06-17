@@ -91,10 +91,15 @@
       padding:28px;border-radius:18px;margin-bottom:24px;
       background:rgba(255,255,255,0.025);
       border:1px solid rgba(255,255,255,0.07);
-      opacity:0;transform:translateX(-20px);
-      transition:opacity 0.6s ease,transform 0.6s ease,border-color 0.3s,box-shadow 0.3s;
+      transition:border-color 0.3s,box-shadow 0.3s;
+      animation:sectionIn 0.6s ease both;
     }
-    .preview-section.visible{opacity:1;transform:translateX(0)}
+    .preview-section:nth-child(1){animation-delay:0.1s}
+    .preview-section:nth-child(2){animation-delay:0.2s}
+    .preview-section:nth-child(3){animation-delay:0.3s}
+    .preview-section:nth-child(4){animation-delay:0.4s}
+    .preview-section:nth-child(5){animation-delay:0.5s}
+    @keyframes sectionIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
     .preview-section:hover{border-color:rgba(0,198,255,0.2);box-shadow:0 0 30px rgba(0,198,255,0.05)}
 
     .preview-section h2{
@@ -208,6 +213,128 @@
       .portfolio-actions{flex-direction:column}
       .btn{justify-content:center}
     }
+
+    .cert-view-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 7px 16px;
+      background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 20px;
+      color: #a78bfa !important;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      letter-spacing: 0.3px;
+    }
+    .cert-view-btn:hover {
+      background: rgba(167,139,250,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(167,139,250,0.2);
+    }
+  </style>
+  <style>
+    /* NUCLEAR OVERRIDE — beats everything in style.css */
+    .preview-card .preview-section {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: none !important;
+      animation: none !important;
+      padding: 28px !important;
+      border-radius: 18px !important;
+      margin-bottom: 24px !important;
+      background: rgba(255,255,255,0.03) !important;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      margin-top: 0 !important;
+    }
+    .preview-card .preview-section * {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .preview-card .preview-section h2 {
+      font-size: 18px !important;
+      font-weight: 700 !important;
+      color: #00c6ff !important;
+      margin-bottom: 18px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      background: none !important;
+      -webkit-text-fill-color: #00c6ff !important;
+    }
+    .preview-card .skills-list {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 10px !important;
+      margin-top: 6px !important;
+    }
+    .preview-card .skills-list span {
+      background: rgba(0,198,255,0.1) !important;
+      border: 1px solid rgba(0,198,255,0.25) !important;
+      color: #00c6ff !important;
+      padding: 7px 16px !important;
+      border-radius: 30px !important;
+      font-size: 13px !important;
+      display: inline-block !important;
+    }
+    .preview-card .projects-preview-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr)) !important;
+      gap: 18px !important;
+    }
+    .preview-card .project-preview {
+      display: block !important;
+      padding: 22px !important;
+      border-radius: 16px !important;
+      background: rgba(0,114,255,0.06) !important;
+      border: 1px solid rgba(0,114,255,0.15) !important;
+    }
+    .preview-card .project-preview h3 { color: #00c6ff !important; margin-bottom: 10px !important; }
+    .preview-card .project-preview p  { color: rgba(180,200,230,0.7) !important; font-size: 13px !important; line-height: 1.7 !important; }
+    .preview-card .project-preview a  { color: #00c6ff !important; display: inline-block !important; margin-top: 10px !important; }
+    .preview-card .cert-preview-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(200px,1fr)) !important;
+      gap: 14px !important;
+    }
+    .preview-card .cert-card {
+      display: block !important;
+      padding: 20px !important;
+      border-radius: 14px !important;
+      background: rgba(167,139,250,0.06) !important;
+      border: 1px solid rgba(167,139,250,0.15) !important;
+    }
+    .preview-card .cert-card h3 { color: #a78bfa !important; margin-bottom: 8px !important; }
+    .preview-card .cert-card p  { color: rgba(180,200,230,0.7) !important; font-size: 13px !important; }
+    .preview-card .experience-preview-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr)) !important;
+      gap: 16px !important;
+    }
+    .preview-card .experience-card {
+      display: block !important;
+      padding: 22px !important;
+      border-radius: 16px !important;
+      background: rgba(0,100,255,0.04) !important;
+      border: 1px solid rgba(0,198,255,0.1) !important;
+      border-left: 3px solid rgba(0,198,255,0.5) !important;
+    }
+    .preview-card .experience-card h3   { color: #00c6ff !important; margin-bottom: 6px !important; }
+    .preview-card .experience-card span { color: rgba(167,139,250,0.8) !important; display: block !important; margin-bottom: 8px !important; font-size: 12px !important; }
+    .preview-card .experience-card p    { color: rgba(180,200,230,0.7) !important; font-size: 13px !important; line-height: 1.7 !important; }
+    .preview-card #previewSkills:empty::after,
+    .preview-card #previewProjects:empty::after,
+    .preview-card #previewCertifications:empty::after,
+    .preview-card #previewExperience:empty::after {
+      content: 'No data added' !important;
+      color: rgba(180,200,230,0.3) !important;
+      font-size: 13px !important;
+      font-style: italic !important;
+    }
   </style>
 </head>
 <body>
@@ -266,8 +393,10 @@
       </div>
 
       <div class="portfolio-actions">
+        <button id="editBtn" class="btn owner-only">✏️ Edit Portfolio</button>
         <button id="copyLinkBtn" class="btn">🔗 Copy Portfolio Link</button>
-        <a href="../frontend/dashboard.html" class="btn back-dashboard-btn owner-only">🏠 Back To Dashboard</a>
+        <button id="deleteBtn" class="btn delete-btn owner-only">🗑️ Delete Portfolio</button>
+        <button onclick="window.location.href='dashboard.html'" class="btn back-dashboard-btn owner-only">🏠 Back To Dashboard</button>
       </div>
 
     </div>
@@ -435,11 +564,7 @@
     }
   })();
 
-  // ── SCROLL REVEAL ─────────────────────────────────────────
-  const observer = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
-  },{threshold:0.1});
-  document.querySelectorAll('.preview-section').forEach(el=>observer.observe(el));
+  // sections use CSS animation — no JS observer needed
 
   // ── SCROLL HINT ───────────────────────────────────────────
   window.addEventListener('scroll',()=>{
