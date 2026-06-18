@@ -3,21 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account</title>
+  <title>Create Account — DevFolio</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#050816;font-family:'Segoe UI',sans-serif;color:#e0e6f0;min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center}
+    #bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+    .auth-page{position:relative;z-index:10;width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;
+      background:radial-gradient(circle at top left,rgba(139,92,246,0.2),transparent 40%),radial-gradient(circle at bottom right,rgba(56,189,248,0.15),transparent 40%)}
+
+    .auth-container{width:100%;max-width:1000px;min-height:540px;display:grid;grid-template-columns:1.1fr 0.9fr;border-radius:28px;overflow:hidden;
+      background:rgba(10,16,35,0.85);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px);
+      box-shadow:0 30px 80px rgba(0,0,0,0.4);animation:containerIn 0.8s cubic-bezier(0.22,1,0.36,1) both}
+    @keyframes containerIn{from{opacity:0;transform:translateY(30px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+    /* LEFT PANEL */
+    .auth-left{
+      display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+      padding:60px 48px;
+      background:linear-gradient(145deg,rgba(56,189,248,0.15),rgba(139,92,246,0.2));
+      border-right:1px solid rgba(255,255,255,0.07);
+      position:relative;overflow:hidden;
+    }
+    .auth-left::before{content:'';position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.04);filter:blur(8px);top:50%;left:50%;transform:translate(-50%,-50%)}
+    .auth-left::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(139,92,246,0.08));pointer-events:none}
+
+    .left-icon{font-size:80px;margin-bottom:24px;z-index:2;position:relative;animation:iconFloat 3s ease-in-out infinite}
+    @keyframes iconFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-14px) rotate(5deg)}}
+
+    .auth-left h2{font-size:30px;font-weight:800;color:#fff;margin-bottom:14px;z-index:2;position:relative;
+      animation:leftSlide 0.7s ease 0.2s both}
+    .auth-left p{color:rgba(224,242,254,0.75);font-size:15px;line-height:1.7;max-width:280px;z-index:2;position:relative;
+      animation:leftSlide 0.7s ease 0.3s both}
+    @keyframes leftSlide{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+    /* Floating orbs on left */
+    .orb{position:absolute;border-radius:50%;pointer-events:none}
+    .orb-1{width:120px;height:120px;background:radial-gradient(circle,rgba(56,189,248,0.2),transparent);top:-20px;right:-20px;animation:orbDrift 8s ease-in-out infinite}
+    .orb-2{width:80px;height:80px;background:radial-gradient(circle,rgba(139,92,246,0.2),transparent);bottom:30px;left:10px;animation:orbDrift 11s ease-in-out infinite reverse}
+    @keyframes orbDrift{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,20px)}}
+
+    /* RIGHT PANEL */
+    .auth-right{padding:50px 44px;display:flex;flex-direction:column;justify-content:center}
+
+    .auth-tabs{display:flex;gap:10px;margin-bottom:32px;animation:rightFade 0.6s ease 0.1s both}
+    @keyframes rightFade{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+    .auth-tabs a{padding:9px 22px;border-radius:30px;text-decoration:none;font-weight:700;font-size:14px;transition:all 0.25s}
+    .auth-tabs a:not(.active){color:rgba(180,200,230,0.6);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)}
+    .auth-tabs a:not(.active):hover{background:rgba(255,255,255,0.09);color:#e0e6f0}
+    .auth-tabs a.active{background:linear-gradient(135deg,#38bdf8,#818cf8);color:#020617}
+
+    .auth-right h1{font-size:32px;font-weight:800;color:#38bdf8;margin-bottom:6px;
+      animation:rightFade 0.6s ease 0.2s both}
+    .auth-subtitle{color:rgba(180,200,230,0.5);font-size:13px;margin-bottom:28px;
+      animation:rightFade 0.6s ease 0.25s both}
+
+    /* Inputs */
+    .input-group{position:relative;margin-bottom:16px;animation:rightFade 0.6s ease both}
+    .input-group:nth-child(1){animation-delay:0.3s}
+    .input-group:nth-child(2){animation-delay:0.35s}
+    .input-group:nth-child(3){animation-delay:0.4s}
+    .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;z-index:2}
+    .auth-right input{
+      width:100%;padding:14px 14px 14px 42px;
+      border-radius:14px;border:1px solid rgba(255,255,255,0.1);
+      background:rgba(255,255,255,0.05);color:#e0e6f0;font-size:14px;
+      font-family:inherit;outline:none;transition:all 0.3s;
+    }
+    .auth-right input:focus{border-color:rgba(56,189,248,0.5);background:rgba(56,189,248,0.06);box-shadow:0 0 0 3px rgba(56,189,248,0.1)}
+    .auth-right input::placeholder{color:rgba(180,200,230,0.35)}
+
+    /* Password eye toggle */
+    .eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(180,200,230,0.4);transition:color 0.2s;font-size:15px;display:flex;align-items:center}
+    .eye-btn:hover{color:#38bdf8}
+
+    /* Signup button */
+    .auth-btn{
+      width:100%;padding:15px;margin-top:4px;
+      border:none;border-radius:14px;
+      background:linear-gradient(135deg,#38bdf8,#818cf8);
+      color:#020617;font-size:15px;font-weight:700;
+      cursor:pointer;font-family:inherit;
+      position:relative;overflow:hidden;transition:all 0.3s;
+      animation:rightFade 0.6s ease 0.45s both;
+    }
+    .auth-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#818cf8,#38bdf8);opacity:0;transition:opacity 0.3s}
+    .auth-btn:hover::before{opacity:1}
+    .auth-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(56,189,248,0.35)}
+    .auth-btn span{position:relative;z-index:1}
+    .auth-btn:disabled{opacity:0.7;cursor:not-allowed;transform:none}
+
+    .auth-link{margin-top:20px;color:rgba(180,200,230,0.5);font-size:13px;text-align:center;
+      animation:rightFade 0.6s ease 0.5s both}
+    .auth-link a{color:#38bdf8;text-decoration:none;font-weight:700}
+    .auth-link a:hover{color:#818cf8}
+
+    /* Strength bar */
+    .strength-wrap{margin-top:-8px;margin-bottom:8px}
+    .strength-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+    .strength-fill{height:100%;width:0%;border-radius:3px;transition:all 0.4s}
+    .strength-label{font-size:10px;text-align:right;margin-top:3px;letter-spacing:0.5px}
+
+    @media(max-width:750px){
+      .auth-container{grid-template-columns:1fr}
+      .auth-left{padding:36px 28px;min-height:200px}
+      .auth-right{padding:36px 28px}
+      .left-icon{font-size:56px;margin-bottom:14px}
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
 </head>
 <body>
 
-<section class="auth-page">
+<canvas id="bg"></canvas>
 
+<section class="auth-page">
   <div class="auth-container">
 
+    <!-- LEFT -->
     <div class="auth-left">
-      <div class="rocket">✨</div>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="left-icon">✨</div>
       <h2>Start Your Portfolio</h2>
-      <p>Build your professional online presence and share it with recruiters.</p>
+      <p>Build your professional online presence and share it with recruiters in minutes.</p>
     </div>
 
+    <!-- RIGHT -->
     <div class="auth-right">
       <div class="auth-tabs">
         <a href="login.html">Sign In</a>
@@ -27,22 +140,70 @@
       <h1>Create Account</h1>
       <p class="auth-subtitle">Register to build your portfolio</p>
 
-      <input id="signupName" type="text" placeholder="Full Name">
-      <input id="signupEmail" type="email" placeholder="Email">
-      <input id="signupPassword" type="password" placeholder="Password">
+      <div class="input-group">
+        <span class="input-icon">👤</span>
+        <input id="signupName" type="text" placeholder="Full Name">
+      </div>
 
-      <button id="signupBtn" class="btn auth-btn">Signup</button>
+      <div class="input-group">
+        <span class="input-icon">📧</span>
+        <input id="signupEmail" type="email" placeholder="Email">
+      </div>
 
-      <p class="auth-link">
-        Already have an account?
-        <a href="login.html">Login</a>
-      </p>
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input id="signupPassword" type="password" placeholder="Password">
+        <button type="button" class="eye-btn" onclick="togglePw('signupPassword',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+
+      <div class="strength-wrap">
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-label" id="strengthLabel"></div>
+      </div>
+
+      <button id="signupBtn" class="btn auth-btn"><span>Create Account →</span></button>
+
+      <p class="auth-link">Already have an account? <a href="login.html">Sign In</a></p>
     </div>
 
   </div>
-
 </section>
 
 <script src="script.js"></script>
+<script>
+/* Password strength */
+document.getElementById('signupPassword').addEventListener('input', function(){
+  const v=this.value, fill=document.getElementById('strengthFill'), label=document.getElementById('strengthLabel');
+  let s=0;
+  if(v.length>=6)s++; if(v.length>=10)s++; if(/[A-Z]/.test(v))s++; if(/[0-9]/.test(v))s++; if(/[^A-Za-z0-9]/.test(v))s++;
+  const lvls=[{w:'0%',c:'transparent',t:''},{w:'25%',c:'#ef4444',t:'WEAK'},{w:'50%',c:'#f97316',t:'FAIR'},{w:'75%',c:'#eab308',t:'GOOD'},{w:'100%',c:'#22c55e',t:'STRONG'}];
+  const l=lvls[Math.min(s,4)];
+  fill.style.width=l.w; fill.style.background=l.c;
+  label.textContent=l.t; label.style.color=l.c;
+});
+
+/* Starfield */
+(function(){
+  const canvas=document.getElementById('bg');if(!canvas)return;
+  const ctx=canvas.getContext('2d');let W,H;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const stars=Array.from({length:250},()=>({x:Math.random()*4000,y:Math.random()*4000,r:Math.random()*1.5+0.2,a:Math.random(),speed:Math.random()*0.004+0.001,twinkle:Math.random()*Math.PI*2}));
+  const orbs=Array.from({length:5},(_,i)=>({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5)*0.0003,vy:(Math.random()-0.5)*0.0003,r:160+Math.random()*200,hue:[200,220,260,280,190][i],a:0.05+Math.random()*0.07,phase:Math.random()*Math.PI*2}));
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const bg=ctx.createRadialGradient(W*.5,H*.5,0,W*.5,H*.5,Math.max(W,H));
+    bg.addColorStop(0,'#060b1f');bg.addColorStop(1,'#020408');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);t+=0.01;
+    orbs.forEach(o=>{o.x+=o.vx;o.y+=o.vy;o.phase+=0.008;if(o.x<0||o.x>1)o.vx*=-1;if(o.y<0||o.y>1)o.vy*=-1;const ox=o.x*W,oy=o.y*H,p=o.a*(0.7+0.3*Math.sin(o.phase));const g=ctx.createRadialGradient(ox,oy,0,ox,oy,o.r);g.addColorStop(0,`hsla(${o.hue},100%,70%,${p})`);g.addColorStop(1,'transparent');ctx.beginPath();ctx.arc(ox,oy,o.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();});
+    stars.forEach(s=>{s.twinkle+=s.speed;const a=s.a*(0.4+0.6*Math.sin(s.twinkle));ctx.beginPath();ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,225,255,${a})`;ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
 </body>
 </html>
