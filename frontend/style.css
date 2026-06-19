@@ -1081,3 +1081,6 @@ body::before {
 .hero-email {
   text-align: center;
 }
+.owner-only {
+  display: none !important;
+}

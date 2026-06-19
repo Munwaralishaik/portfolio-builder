@@ -284,13 +284,19 @@ function updateOwnerButtons() {
   const ownerButtons = document.querySelectorAll(".owner-only");
   const loggedInEmail = localStorage.getItem("userEmail");
 
-  if (loggedInEmail && data && loggedInEmail === data.email) {
+  // Check both data.email (contact) and data.userEmail (owner field)
+  const isOwner = loggedInEmail && data && (
+    loggedInEmail === data.email ||
+    loggedInEmail === data.userEmail
+  );
+
+  if (isOwner) {
     ownerButtons.forEach(btn => {
-      btn.style.display = "inline-flex";
+      btn.style.setProperty("display", "inline-flex", "important");
     });
   } else {
     ownerButtons.forEach(btn => {
-      btn.style.display = "none";
+      btn.style.setProperty("display", "none", "important");
     });
   }
 }
