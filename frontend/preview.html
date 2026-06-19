@@ -804,16 +804,26 @@
         subEl.textContent = 'Taking you to your portfolio...';
         rocket.textContent = '✅';
         stepEl.textContent = 'Portfolio is live!';
-        // Restore alert after so redirect alert can still fire if needed
-        setTimeout(()=>{ window.alert = _origAlert; }, 2000);
-      } else if(typeof msg === 'string' && msg.toLowerCase().includes('error')) {
+        // Restore alert after 1.5s then let script.js redirect
+        setTimeout(()=>{ window.alert = _origAlert; }, 1500);
+      } else if(typeof msg === 'string' && (msg.toLowerCase().includes('error') || msg.toLowerCase().includes('failed'))) {
         // Show error state
         fill.style.width = '0%';
         rocket.textContent = '❌';
         titleEl.textContent = 'Something went wrong';
         subEl.textContent = msg;
         stepEl.textContent = 'Please try again';
-        setTimeout(()=>{ overlay.classList.remove('active'); window.alert = _origAlert; }, 2500);
+        setTimeout(()=>{ 
+          overlay.classList.remove('active'); 
+          window.alert = _origAlert; 
+        }, 2500);
+      } else if(typeof msg === 'string' && msg.toLowerCase().includes('server error')) {
+        fill.style.width = '0%';
+        rocket.textContent = '❌';
+        titleEl.textContent = 'Server Error';
+        subEl.textContent = 'Please logout, login again and retry';
+        stepEl.textContent = msg;
+        setTimeout(()=>{ overlay.classList.remove('active'); window.alert = _origAlert; }, 3000);
       } else {
         // Any other alert — hide overlay and show normally
         overlay.classList.remove('active');

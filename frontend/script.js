@@ -195,14 +195,24 @@ if (form) {
         alert("Image size must be below 2MB");
         return;
       }
+      // Compress image before saving
       const reader = new FileReader();
       reader.onloadend = function () {
-        data.image = reader.result;
-        readResumeAndSave();
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxSize = 400;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
+          else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          data.image = canvas.toDataURL('image/jpeg', 0.7);
+          readResumeAndSave();
+        };
+        img.src = reader.result;
       };
-      reader.onerror = function () {
-        alert("Error reading image");
-      };
+      reader.onerror = function () { alert("Error reading image"); };
       reader.readAsDataURL(file);
     } else {
       readResumeAndSave();
@@ -451,6 +461,10 @@ if (publishBtn) {
     const slug = data.name.toLowerCase().trim().replaceAll(" ", "-");
     const userEmail = localStorage.getItem("userEmail");
 
+    // Strip fileData from certs before sending to backend (keeps payload small)
+    const certsForBackend = (Array.isArray(data.certifications) ? data.certifications : [])
+      .map(({ fileData, ...rest }) => rest);
+
     const payload = {
       name: data.name,
       role: data.role,
@@ -465,7 +479,7 @@ if (publishBtn) {
       resume: data.resume || "",
       slug: slug,
       projects: JSON.stringify(Array.isArray(data.projects) ? data.projects : []),
-      certifications: JSON.stringify(Array.isArray(data.certifications) ? data.certifications : []),
+      certifications: JSON.stringify(certsForBackend),
       experiences: JSON.stringify(Array.isArray(data.experiences) ? data.experiences : []),
       userEmail: userEmail
     };
@@ -487,7 +501,14 @@ if (publishBtn) {
         });
       }
 
-      if (!response.ok) throw new Error("Failed to publish portfolio");
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("Publish error:", response.status, errText);
+        if (response.status === 500) {
+          throw new Error("Server error — please logout and login again, then try publishing.");
+        }
+        throw new Error("Failed to publish portfolio: " + response.status);
+      }
 
       const savedPortfolio = await response.json();
 
@@ -714,6 +735,8 @@ if (logoutBtn) {
 const dashboardContainer = document.getElementById("dashboardPortfolios");
 if (dashboardContainer) loadDashboardPortfolios();
 
+/* Fix: guard all innerHTML calls */
+
 async function loadDashboardPortfolios() {
   try {
     const userEmail = localStorage.getItem("userEmail");
@@ -832,41 +855,3 @@ async function deletePortfolio(slug) {
     alert("Failed to delete portfolio");
   }
 }
-
-const avatarUpload = document.getElementById("avatarUpload");
-const avatarEl = document.getElementById("avatarEl");
-const avatarHint = document.getElementById("avatarHint");
-const removePhotoBtn = document.getElementById("removePhotoBtn");
-
-const defaultAvatar = avatarEl.innerHTML;
-
-avatarHint.addEventListener("click", () => {
-  avatarUpload.click();
-});
-
-avatarUpload.addEventListener("change", function () {
-  const file = this.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function (e) {
-    avatarEl.innerHTML = `
-      <img src="${e.target.result}"
-           style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
-    `;
-
-    removePhotoBtn.style.display = "flex";
-  };
-
-  reader.readAsDataURL(file);
-});
-
-removePhotoBtn.addEventListener("click", function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  avatarEl.innerHTML = defaultAvatar;
-  avatarUpload.value = "";
-  removePhotoBtn.style.display = "none";
-});
