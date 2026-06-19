@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Confirm Modal</title>
+  <style>
+    /* ── PASTE THIS CSS INTO YOUR style.css ── */
+
+    #deleteModal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 4, 14, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+    }
+    #deleteModal.open {
+      display: flex;
+      animation: dmFadeIn 0.25s ease both;
+    }
+    @keyframes dmFadeIn { from{opacity:0} to{opacity:1} }
+
+    .dm-card {
+      background: rgba(10, 16, 35, 0.95);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 24px;
+      padding: 40px 36px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: dmSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+      box-shadow: 0 0 60px rgba(239,68,68,0.12), 0 30px 60px rgba(0,0,0,0.4);
+    }
+    @keyframes dmSlideUp {
+      from { opacity:0; transform: scale(0.85) translateY(20px); }
+      to   { opacity:1; transform: scale(1)   translateY(0); }
+    }
+
+    /* Top accent line */
+    .dm-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; width: 80%; height: 2px;
+      background: linear-gradient(90deg, transparent, #ef4444, transparent);
+      animation: dmGlow 2s ease-in-out infinite;
+    }
+    @keyframes dmGlow { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+    /* Icon */
+    .dm-icon-wrap {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      animation: dmIconPop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
+    }
+    @keyframes dmIconPop { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
+    .dm-icon { font-size: 32px; }
+
+    .dm-title {
+      font-size: 20px; font-weight: 800;
+      color: #f1f5f9;
+      margin-bottom: 8px;
+      animation: dmFadeUp 0.4s ease 0.15s both;
+    }
+    .dm-sub {
+      font-size: 13px;
+      color: rgba(180,200,230,0.55);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      animation: dmFadeUp 0.4s ease 0.2s both;
+    }
+    @keyframes dmFadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    .dm-name {
+      display: inline-block;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      color: rgba(239,68,68,0.9);
+      border-radius: 8px;
+      padding: 2px 10px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .dm-btns {
+      display: flex; gap: 12px;
+      animation: dmFadeUp 0.4s ease 0.25s both;
+    }
+    .dm-btn {
+      flex: 1; padding: 13px;
+      border: none; border-radius: 12px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.25s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .dm-cancel {
+      background: rgba(255,255,255,0.05);
+      color: rgba(180,200,230,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .dm-cancel:hover { background: rgba(255,255,255,0.09); transform: translateY(-2px); }
+
+    .dm-delete {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(239,68,68,0.3);
+    }
+    .dm-delete:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(239,68,68,0.45); }
+    .dm-delete:active { transform: scale(0.97); }
+
+    /* Shaking animation when confirm is clicked */
+    .dm-card.shake {
+      animation: dmShake 0.4s ease;
+    }
+    @keyframes dmShake {
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-8px)}
+      40%{transform:translateX(8px)}
+      60%{transform:translateX(-5px)}
+      80%{transform:translateX(5px)}
+    }
+  </style>
+</head>
+<body style="background:#050816;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Segoe UI',sans-serif">
+
+  <!-- ── PASTE THIS HTML just before </body> in every page that has delete ── -->
+  <div id="deleteModal">
+    <div class="dm-card" id="dmCard">
+      <div class="dm-icon-wrap">
+        <div class="dm-icon">🗑️</div>
+      </div>
+      <div class="dm-title">Delete Portfolio?</div>
+      <div class="dm-sub">
+        This will permanently delete<br>
+        <span class="dm-name" id="dmItemName">this portfolio</span><br>
+        This action cannot be undone.
+      </div>
+      <div class="dm-btns">
+        <button class="dm-btn dm-cancel" onclick="dmResolve(false)">Cancel</button>
+        <button class="dm-btn dm-delete" onclick="dmResolve(true)">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo trigger -->
+  <button onclick="confirmDelete('My Awesome Portfolio').then(r => alert(r ? 'Deleted!' : 'Cancelled'))"
+    style="padding:14px 28px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">
+    Try Delete Animation
+  </button>
+
+  <!-- ── PASTE THIS JS into your script.js (replace all confirm() calls) ── -->
+  <script>
+  /* ── CUSTOM DELETE CONFIRM ── */
+  let _dmResolve = null;
+
+  function confirmDelete(itemName = 'this item') {
+    return new Promise(resolve => {
+      _dmResolve = resolve;
+      const modal = document.getElementById('deleteModal');
+      const nameEl = document.getElementById('dmItemName');
+      const card   = document.getElementById('dmCard');
+      if (nameEl) nameEl.textContent = itemName;
+      // Reset animation
+      card.style.animation = 'none';
+      card.offsetHeight; // reflow
+      card.style.animation = '';
+      modal.classList.add('open');
+    });
+  }
+
+  function dmResolve(result) {
+    const modal = document.getElementById('deleteModal');
+    const card  = document.getElementById('dmCard');
+    if (result) {
+      // Shake then close
+      card.classList.add('shake');
+      setTimeout(() => {
+        card.classList.remove('shake');
+        modal.classList.remove('open');
+        if (_dmResolve) { _dmResolve(true); _dmResolve = null; }
+      }, 400);
+    } else {
+      modal.classList.remove('open');
+      if (_dmResolve) { _dmResolve(false); _dmResolve = null; }
+    }
+  }
+
+  // Close on backdrop click
+  document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) dmResolve(false);
+  });
+  </script>
+
+</body>
+</html>
