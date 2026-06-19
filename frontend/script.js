@@ -461,10 +461,6 @@ if (publishBtn) {
     const slug = data.name.toLowerCase().trim().replaceAll(" ", "-");
     const userEmail = localStorage.getItem("userEmail");
 
-    // Strip fileData from certs before sending to backend (keeps payload small)
-    const certsForBackend = (Array.isArray(data.certifications) ? data.certifications : [])
-      .map(({ fileData, ...rest }) => rest);
-
     const payload = {
       name: data.name,
       role: data.role,
@@ -479,7 +475,7 @@ if (publishBtn) {
       resume: data.resume || "",
       slug: slug,
       projects: JSON.stringify(Array.isArray(data.projects) ? data.projects : []),
-      certifications: JSON.stringify(certsForBackend),
+      certifications: JSON.stringify(Array.isArray(data.certifications) ? data.certifications : []),
       experiences: JSON.stringify(Array.isArray(data.experiences) ? data.experiences : []),
       userEmail: userEmail
     };
