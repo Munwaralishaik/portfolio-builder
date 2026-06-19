@@ -235,6 +235,68 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(167,139,250,0.2);
     }
+
+    /* ── SHARE BUTTONS ── */
+    .share-section{
+      margin-top:28px;
+      padding:24px;
+      border-radius:18px;
+      background:rgba(255,255,255,0.025);
+      border:1px solid rgba(255,255,255,0.07);
+    }
+    .share-title{
+      font-size:13px;font-weight:600;
+      color:rgba(180,200,230,0.5);
+      letter-spacing:1px;text-transform:uppercase;
+      margin-bottom:14px;display:flex;align-items:center;gap:8px;
+    }
+    .share-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent)}
+    .share-buttons{display:flex;flex-wrap:wrap;gap:10px}
+    .share-btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 18px;border-radius:12px;
+      font-size:13px;font-weight:600;cursor:pointer;
+      border:none;font-family:inherit;
+      transition:all 0.3s;text-decoration:none;
+      position:relative;overflow:hidden;
+    }
+    .share-btn::before{
+      content:'';position:absolute;inset:0;
+      opacity:0;transition:opacity 0.3s;
+    }
+    .share-btn:hover::before{opacity:1}
+    .share-btn:hover{transform:translateY(-3px)}
+    .share-btn span{position:relative;z-index:1}
+    .share-btn .btn-icon{font-size:16px;position:relative;z-index:1}
+
+    .share-wa{background:rgba(37,211,102,0.12);color:#25d366;border:1px solid rgba(37,211,102,0.25)}
+    .share-wa::before{background:rgba(37,211,102,0.08)}
+    .share-wa:hover{box-shadow:0 8px 24px rgba(37,211,102,0.2)}
+
+    .share-tw{background:rgba(29,161,242,0.12);color:#1da1f2;border:1px solid rgba(29,161,242,0.25)}
+    .share-tw::before{background:rgba(29,161,242,0.08)}
+    .share-tw:hover{box-shadow:0 8px 24px rgba(29,161,242,0.2)}
+
+    .share-li{background:rgba(10,102,194,0.12);color:#0a66c2;border:1px solid rgba(10,102,194,0.25)}
+    .share-li::before{background:rgba(10,102,194,0.08)}
+    .share-li:hover{box-shadow:0 8px 24px rgba(10,102,194,0.2)}
+
+    .share-copy{background:rgba(0,198,255,0.1);color:#00c6ff;border:1px solid rgba(0,198,255,0.25)}
+    .share-copy::before{background:rgba(0,198,255,0.08)}
+    .share-copy:hover{box-shadow:0 8px 24px rgba(0,198,255,0.2)}
+
+    .share-copy.copied{background:rgba(34,197,94,0.12);color:#22c55e;border-color:rgba(34,197,94,0.25)}
+
+    /* Toast */
+    #shareToast{
+      position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+      z-index:999;background:rgba(0,198,100,0.12);
+      border:1px solid rgba(0,198,100,0.3);border-radius:12px;
+      padding:12px 24px;font-size:13px;color:rgba(0,230,120,0.9);
+      display:none;align-items:center;gap:8px;white-space:nowrap;
+      box-shadow:0 8px 30px rgba(0,0,0,0.3);
+    }
+    @keyframes toastUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
   </style>
   <style>
     /* NUCLEAR OVERRIDE — beats everything in style.css */
@@ -340,6 +402,7 @@
 <body>
 
   <canvas id="bg"></canvas>
+  <div id="shareToast">✅ <span id="shareToastMsg">Link copied!</span></div>
   <div class="corner-deco tl"></div>
   <div class="corner-deco br"></div>
 
@@ -392,12 +455,35 @@
         <p id="previewPhone"></p>
       </div>
 
-      <div class="portfolio-actions">
-        <button id="editBtn" class="btn owner-only">✏️ Edit Portfolio</button>
-        <button id="copyLinkBtn" class="btn">🔗 Copy Portfolio Link</button>
-        <button id="deleteBtn" class="btn delete-btn owner-only">🗑️ Delete Portfolio</button>
-        <button onclick="window.location.href='/dashboard.html'" class="btn back-dashboard-btn owner-only">🏠 Back To Dashboard</button>
+      <!-- Share Section -->
+      <div class="share-section">
+        <div class="share-title">🔗 Share Portfolio</div>
+        <div class="share-buttons">
+          <button class="share-btn share-wa" onclick="shareWhatsApp()">
+            <span class="btn-icon">💬</span><span>WhatsApp</span>
+          </button>
+          <button class="share-btn share-tw" onclick="shareTwitter()">
+            <span class="btn-icon">🐦</span><span>Twitter</span>
+          </button>
+          <button class="share-btn share-li" onclick="shareLinkedIn()">
+            <span class="btn-icon">💼</span><span>LinkedIn</span>
+          </button>
+          <button class="share-btn share-copy" id="shareCopyBtn" onclick="shareCopy()">
+            <span class="btn-icon">🔗</span><span id="shareCopyText">Copy Link</span>
+          </button>
+          <button class="share-btn owner-only" id="editBtn" style="background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.25)">
+            <span class="btn-icon">✏️</span><span>Edit</span>
+          </button>
+          <button class="share-btn owner-only" id="deleteBtn" style="background:rgba(239,68,68,0.08);color:#f87171;border:1px solid rgba(239,68,68,0.2)">
+            <span class="btn-icon">🗑️</span><span>Delete</span>
+          </button>
+          <button class="share-btn owner-only" onclick="window.location.href='/dashboard.html'" style="background:rgba(0,198,255,0.08);color:#00c6ff;border:1px solid rgba(0,198,255,0.2)">
+            <span class="btn-icon">🏠</span><span>Dashboard</span>
+          </button>
+        </div>
       </div>
+
+
 
     </div>
   </section>
@@ -578,6 +664,107 @@
       el.style.animationDelay=(i*0.06)+'s';
     });
   },600);
+
+  // ── SHARE FUNCTIONS ───────────────────────────────────────
+  function getShareUrl(){
+    return window.location.origin + '/p/' + (window.location.pathname.replace('/p/','') || new URLSearchParams(window.location.search).get('id') || '');
+  }
+
+  function getShareText(){
+    const name = document.getElementById('previewName')?.innerText || 'My Portfolio';
+    const role = document.getElementById('previewRole')?.innerText || '';
+    return `Check out ${name}'s portfolio${role ? ' — ' + role : ''}!`;
+  }
+
+  function shareWhatsApp(){
+    const url = encodeURIComponent(getShareUrl());
+    const text = encodeURIComponent(getShareText());
+    window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+  }
+
+  function shareTwitter(){
+    const url = encodeURIComponent(getShareUrl());
+    const text = encodeURIComponent(getShareText());
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  }
+
+  function shareLinkedIn(){
+    const url = encodeURIComponent(getShareUrl());
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+  }
+
+  function shareCity(){
+    const url = getShareUrl();
+    navigator.clipboard.writeText(url).then(()=>{
+      const btn = document.getElementById('shareCopyBtn');
+      const txt = document.getElementById('shareCopyText');
+      btn.classList.add('copied');
+      txt.textContent = 'Copied! ✅';
+      showShareToast('Link copied to clipboard!');
+      setTimeout(()=>{ btn.classList.remove('copied'); txt.textContent = 'Copy Link'; }, 2500);
+    });
+  }
+
+  function shareopy(){
+    shareCity();
+  }
+
+  function shareCopy(){
+    const url = getShareUrl();
+    navigator.clipboard.writeText(url).then(()=>{
+      const btn = document.getElementById('shareCopyBtn');
+      const txt = document.getElementById('shareCopyText');
+      btn.classList.add('copied');
+      txt.textContent = 'Copied! ✅';
+      showShareToast('🔗 Link copied to clipboard!');
+      setTimeout(()=>{ btn.classList.remove('copied'); txt.textContent = 'Copy Link'; }, 2500);
+    }).catch(()=>{
+      // Fallback for mobile
+      const el = document.createElement('textarea');
+      el.value = url;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      showShareToast('🔗 Link copied!');
+    });
+  }
+
+  function showShareToast(msg){
+    const toast = document.getElementById('shareToast');
+    const toastMsg = document.getElementById('shareToastMsg');
+    if(!toast) return;
+    toastMsg.textContent = msg;
+    toast.style.display = 'flex';
+    toast.style.animation = 'none';
+    toast.offsetHeight;
+    toast.style.animation = 'toastUp 0.4s ease both';
+    setTimeout(()=>{ toast.style.display='none'; }, 2500);
+  }
+
+  // Native share API on mobile
+  if(navigator.share){
+    // Add native share button on mobile
+    window.addEventListener('load', ()=>{
+      const shareButtons = document.querySelector('.share-buttons');
+      if(shareButtons && window.innerWidth < 768){
+        const nativeBtn = document.createElement('button');
+        nativeBtn.className = 'share-btn share-copy';
+        nativeBtn.style.background = 'rgba(167,139,250,0.1)';
+        nativeBtn.style.color = '#a78bfa';
+        nativeBtn.style.borderColor = 'rgba(167,139,250,0.25)';
+        nativeBtn.innerHTML = '<span class="btn-icon">📤</span><span>Share</span>';
+        nativeBtn.onclick = ()=>{
+          navigator.share({
+            title: document.getElementById('previewName')?.innerText || 'Portfolio',
+            text: getShareText(),
+            url: getShareUrl()
+          });
+        };
+        shareButtons.prepend(nativeBtn);
+      }
+    });
+  }
   </script>
 
 </body>
