@@ -28,4 +28,13 @@ public String changePassword(
 
     return authService.changePassword(request);
     }
+    @PostMapping("/forgot-password")
+public String forgotPassword(@RequestBody ForgotPasswordRequest request) {
+    return authService.forgotPassword(request);
+    }
+    
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestBody ResetPasswordRequest request) {
+        return authService.resetPassword(request);
+    }
 }

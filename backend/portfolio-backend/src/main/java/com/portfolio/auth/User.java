@@ -16,7 +16,8 @@ public class User {
     private String email;
     @JsonIgnore
     private String password;
-
+    private String resetToken;
+    private java.time.LocalDateTime resetTokenExpiry;
     private String role = "USER";
 
     public String getRole() {
@@ -58,5 +59,22 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public java.time.LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(java.time.LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+    
 
 }
