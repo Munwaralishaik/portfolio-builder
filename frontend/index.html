@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DevFolio Builder</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <title>FolioForge Builder</title>
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"> -->
   <style>
     :root {
       --cyan: #38bdf8;
@@ -153,7 +154,7 @@
       animation: blink 1.5s ease-in-out infinite;
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-
+   
     .hero h1 {
       font-size: clamp(2.8rem, 7vw, 5rem);
       font-weight: 900;
@@ -603,6 +604,15 @@
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .reveal { opacity: 1; transform: none; }
     }
+    /* Times New Roman only for headings */
+.hero h1,
+.section-title,
+.feature-card h3,
+.template-info h3,
+.step-card h3,
+.cta-inner h2 {
+    font-family: "Times New Roman", Times, serif;
+}
   </style>
 </head>
 <body>
@@ -611,7 +621,7 @@
 
 <!-- NAVBAR -->
 <nav id="navbar">
-  <a href="#" class="nav-logo">DevFolio</a>
+  <a href="#" class="nav-logo">FolioForge</a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#templates">Templates</a></li>
@@ -813,7 +823,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 DevFolio Builder. Built for developers.Developed by Munwar Shaik</p>
+  <p>© 2026 FolioForge Builder. Built for developers.Developed by Munwar Shaik</p>
   <ul class="footer-links">
     <li><a href="login.html">Login</a></li>
     <li><a href="signup.html">Sign Up</a></li>

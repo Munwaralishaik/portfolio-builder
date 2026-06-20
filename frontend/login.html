@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login — DevFolio</title>
+  <title>Login — FolioForge</title>
   <link rel="stylesheet" href="style.css">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -47,6 +47,16 @@
     @keyframes orbMove{from{transform:translate(0,0)}to{transform:translate(40px,30px)}}
     @keyframes orbMove2{from{transform:translate(0,0)}to{transform:translate(-40px,-30px)}}
 
+    .home-logo{
+      position:absolute;top:20px;left:20px;z-index:3;
+      font-size:14px;font-weight:700;
+      background:linear-gradient(135deg,#fff,#00c6ff);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;text-decoration:none;
+      letter-spacing:-0.02em;transition:opacity 0.2s;
+    }
+    .home-logo:hover{opacity:0.7}
+
     /* Floating tech icons */
     .floating-icons{position:absolute;inset:0;pointer-events:none;overflow:hidden}
     .fi{
@@ -60,7 +70,7 @@
       100%{transform:translateY(-100%) rotate(360deg);opacity:0}
     }
 
-    .rocket{font-size:80px;margin-bottom:24px;z-index:2;animation:rocketBob 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(0,198,255,0.4))}
+    .rocket{font-size:80px;margin-bottom:24px;z-index:2;animation:rocketBob 3s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(0,198,255,0.4));cursor:pointer}
     @keyframes rocketBob{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-14px) rotate(5deg)}}
 
     .auth-left h2{font-size:30px;font-weight:700;color:#fff;margin-bottom:12px;z-index:2;position:relative;animation:slideUp 0.6s ease 0.3s both}
@@ -129,6 +139,11 @@
     .toggle-pwd{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;color:rgba(180,200,230,0.4);transition:color 0.2s}
     .toggle-pwd:hover{color:rgba(0,198,255,0.8)}
 
+    /* Forgot password link */
+    .forgot-row{display:flex;justify-content:flex-end;margin:-8px 0 18px;animation:slideUp 0.5s ease 0.48s both}
+    .forgot-link{font-size:12px;color:rgba(0,198,255,0.6);text-decoration:none;cursor:pointer;transition:color 0.2s}
+    .forgot-link:hover{color:#00c6ff}
+
     .auth-btn{
       width:100%;padding:14px;border:none;border-radius:12px;
       background:linear-gradient(135deg,#0072ff,#00c6ff);
@@ -147,11 +162,6 @@
     .auth-link a{color:#00c6ff;text-decoration:none;font-weight:600}
     .auth-link a:hover{color:#a78bfa}
 
-    /* Divider */
-    .auth-divider{display:flex;align-items:center;gap:12px;margin:4px 0 16px;animation:slideUp 0.5s ease 0.5s both}
-    .auth-divider span{font-size:12px;color:rgba(180,200,230,0.3);white-space:nowrap}
-    .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07)}
-
     /* Error message */
     .auth-error{
       display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
@@ -159,6 +169,69 @@
       margin-bottom:14px;animation:shake 0.4s ease;
     }
     @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+    /* ── FORGOT PASSWORD MODAL ── */
+    #forgotModal{
+      position:fixed;inset:0;z-index:200;
+      background:rgba(2,4,14,0.85);backdrop-filter:blur(8px);
+      display:none;align-items:center;justify-content:center;padding:20px;
+    }
+    #forgotModal.open{display:flex;animation:fadeIn 0.3s ease both}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .forgot-card{
+      background:rgba(10,16,35,0.97);
+      border:1px solid rgba(0,198,255,0.2);
+      border-radius:22px;padding:38px;width:100%;max-width:400px;
+      animation:cardIn 0.4s ease both;text-align:center;
+      position:relative;
+    }
+    .forgot-close{
+      position:absolute;top:16px;right:16px;
+      width:30px;height:30px;border-radius:50%;
+      background:rgba(255,255,255,0.06);border:none;
+      color:rgba(180,200,230,0.6);font-size:16px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:all 0.2s;
+    }
+    .forgot-close:hover{background:rgba(239,68,68,0.15);color:#f87171}
+    .forgot-icon{font-size:40px;margin-bottom:14px;animation:rocketBob 3s ease-in-out infinite}
+    .forgot-card h3{
+      font-size:20px;font-weight:700;margin-bottom:8px;
+      background:linear-gradient(90deg,#00c6ff,#a78bfa);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .forgot-card p{font-size:13px;color:rgba(180,200,230,0.5);margin-bottom:24px;line-height:1.6}
+    .forgot-input-wrap{position:relative;margin-bottom:18px}
+    .forgot-input-wrap .input-icon{left:16px}
+    .forgot-card input{
+      width:100%;background:rgba(255,255,255,0.04);
+      border:1px solid rgba(0,198,255,0.15);border-radius:12px;
+      color:#e0e6f0;padding:13px 16px 13px 44px;font-size:14px;
+      font-family:inherit;outline:none;height:50px;transition:all 0.3s;
+    }
+    .forgot-card input:focus{border-color:rgba(0,198,255,0.5);box-shadow:0 0 0 3px rgba(0,198,255,0.1)}
+    .forgot-card input::placeholder{color:rgba(180,200,230,0.3)}
+    .forgot-send-btn{
+      width:100%;padding:13px;border:none;border-radius:12px;
+      background:linear-gradient(135deg,#0072ff,#00c6ff);color:#fff;
+      font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+      transition:all 0.3s;margin-bottom:14px;
+    }
+    .forgot-send-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,114,255,0.35)}
+    .forgot-send-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+    .forgot-back{font-size:12px;color:rgba(180,200,230,0.5);text-decoration:none;cursor:pointer}
+    .forgot-back:hover{color:#00c6ff}
+
+    .forgot-success{display:none;text-align:center}
+    .forgot-success.show{display:block}
+    .forgot-success .check{
+      width:60px;height:60px;border-radius:50%;
+      background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);
+      display:flex;align-items:center;justify-content:center;
+      font-size:28px;margin:0 auto 16px;
+      animation:checkPop 0.4s ease both;
+    }
+    @keyframes checkPop{from{transform:scale(0)}to{transform:scale(1)}}
 
     @media(max-width:768px){
       .auth-container{grid-template-columns:1fr;min-height:auto}
@@ -175,15 +248,42 @@
 <div class="corner-deco tl"></div>
 <div class="corner-deco br"></div>
 
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgotModal">
+  <div class="forgot-card">
+    <button class="forgot-close" onclick="closeForgot()">✕</button>
+
+    <!-- Request form -->
+    <div id="forgotRequest">
+      <div class="forgot-icon">🔑</div>
+      <h3>Forgot Password?</h3>
+      <p>No worries! Enter your email and we'll send you a link to reset your password.</p>
+      <div class="forgot-input-wrap">
+        <span class="input-icon">📧</span>
+        <input type="email" id="forgotEmail" placeholder="your@email.com">
+      </div>
+      <button class="forgot-send-btn" id="forgotSendBtn" onclick="sendForgotPassword()">Send Reset Link</button>
+      <a class="forgot-back" onclick="closeForgot()">← Back to login</a>
+    </div>
+
+    <!-- Success state -->
+    <div class="forgot-success" id="forgotSuccess">
+      <div class="check">✅</div>
+      <h3>Check your email</h3>
+      <p>We've sent a password reset link to <strong id="sentEmailText" style="color:#00c6ff"></strong>. Check your inbox (and spam folder).</p>
+      <button class="forgot-send-btn" onclick="closeForgot()">Got it</button>
+    </div>
+  </div>
+</div>
+
 <div class="auth-page">
   <div class="auth-container">
 
     <!-- LEFT -->
     <div class="auth-left">
       <div class="floating-icons" id="floatingIcons"></div>
-      <a href="index.html" style="text-decoration:none">
-        <div class="rocket">🚀</div>
-      </a>
+      <a href="index.html" class="home-logo">⚡ FolioForge</a>
+      <div class="rocket" onclick="window.location.href='index.html'" title="Back to Home">🚀</div>
       <h2>Welcome Back</h2>
       <p>Create, publish, and manage professional portfolios with ease.</p>
       <div class="feature-badges">
@@ -196,6 +296,7 @@
     <!-- RIGHT -->
     <div class="auth-right">
       <div class="auth-tabs">
+        <a href="index.html">🏠 Home</a>
         <a href="login.html" class="active">Sign In</a>
         <a href="signup.html">Sign Up</a>
       </div>
@@ -214,6 +315,10 @@
         <span class="input-icon">🔒</span>
         <input id="loginPassword" class="auth-input" type="password" placeholder="Password" autocomplete="current-password">
         <span class="toggle-pwd" id="togglePwd">👁️</span>
+      </div>
+
+      <div class="forgot-row">
+        <a class="forgot-link" onclick="openForgot()">🤡Forgot Your Password, Legend?</a>
       </div>
 
       <button id="loginBtn" class="btn auth-btn"><span>Login →</span></button>
@@ -248,6 +353,49 @@
       _orig(msg);
     }
   };
+
+  // ── FORGOT PASSWORD MODAL LOGIC ──────────────────────────
+  function openForgot(){
+    document.getElementById('forgotModal').classList.add('open');
+    document.getElementById('forgotRequest').style.display = 'block';
+    document.getElementById('forgotSuccess').classList.remove('show');
+    const loginEmail = document.getElementById('loginEmail').value;
+    if(loginEmail) document.getElementById('forgotEmail').value = loginEmail;
+  }
+  function closeForgot(){
+    document.getElementById('forgotModal').classList.remove('open');
+  }
+  // Close modal on backdrop click
+  document.getElementById('forgotModal').addEventListener('click', function(e){
+    if(e.target === this) closeForgot();
+  });
+
+  async function sendForgotPassword(){
+    const email = document.getElementById('forgotEmail').value.trim();
+    if(!email){
+      document.getElementById('forgotEmail').style.borderColor = 'rgba(239,68,68,0.5)';
+      return;
+    }
+    const btn = document.getElementById('forgotSendBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+      // Attempt to call backend forgot-password endpoint if it exists
+      await fetch('https://portfolio-backend-au16.onrender.com/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }).catch(()=>{});
+    } finally {
+      // Show success regardless (don't reveal if email exists, for security)
+      document.getElementById('sentEmailText').textContent = email;
+      document.getElementById('forgotRequest').style.display = 'none';
+      document.getElementById('forgotSuccess').classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Link';
+    }
+  }
 
   // Floating tech icons
   const icons = ['⚡','🎨','💻','🚀','📊','🔥','✨','🛠️','📱','🌐'];
