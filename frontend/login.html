@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login — FolioForge</title>
+  <title>Login — DevFolio</title>
   <link rel="stylesheet" href="style.css">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -282,7 +282,7 @@
     <!-- LEFT -->
     <div class="auth-left">
       <div class="floating-icons" id="floatingIcons"></div>
-      <a href="index.html" class="home-logo">⚡ FolioForge</a>
+      <a href="index.html" class="home-logo">⚡ DevFolio</a>
       <div class="rocket" onclick="window.location.href='index.html'" title="Back to Home">🚀</div>
       <h2>Welcome Back</h2>
       <p>Create, publish, and manage professional portfolios with ease.</p>
@@ -318,7 +318,7 @@
       </div>
 
       <div class="forgot-row">
-        <a class="forgot-link" onclick="openForgot()">🤡Forgot Your Password, Legend?</a>
+        <a class="forgot-link" onclick="openForgot()">Forgot password?</a>
       </div>
 
       <button id="loginBtn" class="btn auth-btn"><span>Login →</span></button>
@@ -381,14 +381,16 @@
     btn.textContent = 'Sending...';
 
     try {
-      // Attempt to call backend forgot-password endpoint if it exists
-      await fetch('https://portfolio-backend-au16.onrender.com/api/auth/forgot-password', {
+      const res = await fetch('https://portfolio-backend-au16.onrender.com/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
-      }).catch(()=>{});
+      });
+      // Show success regardless of whether email exists (security best practice)
+      // Backend already throws if user not found, but we don't reveal that to the UI
+    } catch(err) {
+      console.error(err);
     } finally {
-      // Show success regardless (don't reveal if email exists, for security)
       document.getElementById('sentEmailText').textContent = email;
       document.getElementById('forgotRequest').style.display = 'none';
       document.getElementById('forgotSuccess').classList.add('show');
