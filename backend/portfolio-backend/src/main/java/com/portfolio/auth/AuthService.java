@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.portfolio.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -67,8 +68,13 @@ public class AuthService {
     }
 
     public String forgotPassword(ForgotPasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        // Silently succeed if email not found — don't reveal whether account exists
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isEmpty()) {
+            return "If that email exists, a reset link has been sent";
+        }
+
+        User user = userOpt.get();
 
         String token = UUID.randomUUID().toString();
 
@@ -80,6 +86,7 @@ public class AuthService {
         String resetLink = "https://portfolio-builder-three-neon.vercel.app/reset-password.html?token=" + token;
 
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("mali8699031@gmail.com");
         message.setTo(user.getEmail());
         message.setSubject("Reset Your DevFolio Password");
         message.setText(
