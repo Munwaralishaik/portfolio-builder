@@ -845,7 +845,7 @@ if (adminBtn) {
   const userEmail = localStorage.getItem("userEmail");
   if (userEmail !== adminEmail) adminBtn.style.display = "none";
 }
-
+/*Forgetpassword*/
 async function deletePortfolio(slug) {
   if (!confirm("Are you sure you want to delete this portfolio?")) return;
   try {
@@ -855,5 +855,43 @@ async function deletePortfolio(slug) {
   } catch (error) {
     console.error(error);
     alert("Failed to delete portfolio");
+  }
+}
+async function sendForgotPassword() {
+  const email = document.getElementById("forgotEmail").value.trim();
+  const btn = document.getElementById("forgotSendBtn");
+
+  if (!email) {
+    alert("Please enter your email");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+
+  try {
+    const response = await fetch("https://portfolio-backend-au16.onrender.com/api/auth/forgot-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to send reset link");
+    }
+
+    document.getElementById("sentEmailText").textContent = email;
+    document.getElementById("forgotRequest").style.display = "none";
+    document.getElementById("forgotSuccess").classList.add("show");
+
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    alert("❌ Reset email failed. Please check backend logs.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Send Reset Link";
   }
 }
