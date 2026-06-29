@@ -370,34 +370,42 @@
     if(e.target === this) closeForgot();
   });
 
-  async function sendForgotPassword(){
-    const email = document.getElementById('forgotEmail').value.trim();
-    if(!email){
-      document.getElementById('forgotEmail').style.borderColor = 'rgba(239,68,68,0.5)';
-      return;
-    }
-    const btn = document.getElementById('forgotSendBtn');
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
+  async function sendForgotPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const btn = document.getElementById('forgotSendBtn');
 
-    try {
-      const res = await fetch('https://portfolio-backend-au16.onrender.com/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      // Show success regardless of whether email exists (security best practice)
-      // Backend already throws if user not found, but we don't reveal that to the UI
-    } catch(err) {
-      console.error(err);
-    } finally {
-      document.getElementById('sentEmailText').textContent = email;
-      document.getElementById('forgotRequest').style.display = 'none';
-      document.getElementById('forgotSuccess').classList.add('show');
-      btn.disabled = false;
-      btn.textContent = 'Send Reset Link';
-    }
+  if (!email) {
+    document.getElementById('forgotEmail').style.borderColor = 'rgba(239,68,68,0.5)';
+    return;
   }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const res = await fetch('https://portfolio-backend-au16.onrender.com/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || 'Failed to send reset email');
+    }
+
+    document.getElementById('sentEmailText').textContent = email;
+    document.getElementById('forgotRequest').style.display = 'none';
+    document.getElementById('forgotSuccess').classList.add('show');
+
+  } catch (err) {
+    console.error(err);
+    alert('❌ Reset email failed. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Link';
+  }
+}
 
   // Floating tech icons
   const icons = ['⚡','🎨','💻','🚀','📊','🔥','✨','🛠️','📱','🌐'];
